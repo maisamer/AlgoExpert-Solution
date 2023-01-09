@@ -98,3 +98,24 @@ vector<string> phoneNumberMnemonics(string phoneNumber) {
   return ans;
 }
 ```
+### Staircase traversal
+
+#### - CPP Solution
+```cpp
+using namespace std;
+
+int rec(int height, int maxSteps) {
+  if(height == 0){
+    return 1;
+  }
+  int ans = 0;
+  for(int i=1;i<=maxSteps && height-i>= 0;i++){
+    ans += rec(height-i,maxSteps);
+  }
+  return ans;
+}
+int staircaseTraversal(int height, int maxSteps) {
+  if(height == 0) return 0;
+  return rec(height,maxSteps);
+}
+```
