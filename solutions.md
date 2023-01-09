@@ -45,3 +45,24 @@ vector<vector<int>> getPermutations(vector<int> array) {
   return ans;
 }
 ```
+### Powerset
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+void powerset(vector<vector<int>>& ans ,vector<int> array,vector<int> subAns,int i) {
+  if(i >= array.size()){
+    ans.push_back(subAns);
+    return;
+  }
+  powerset(ans,array,subAns,i+1);
+  subAns.push_back(array[i]);
+  powerset(ans,array,subAns,i+1);
+}
+vector<vector<int>> powerset(vector<int> array) {
+  vector<vector<int>> ans ;
+  powerset(ans,array,{},0);
+  return ans;
+}
+```
