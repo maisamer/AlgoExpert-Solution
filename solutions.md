@@ -66,3 +66,35 @@ vector<vector<int>> powerset(vector<int> array) {
   return ans;
 }
 ```
+### Phone number mnemonics
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+map<char,string> m;
+void recursion(string phoneNumber,vector<string>& ans,string opt,int i){
+  if(i >= phoneNumber.size()){
+    ans.push_back(opt);
+    return;
+  }
+  for(int j=0;j<m[phoneNumber[i]].size();j++){
+    recursion(phoneNumber,ans,opt+m[phoneNumber[i]][j], i+1);
+  }
+}
+vector<string> phoneNumberMnemonics(string phoneNumber) {
+  m['0'] = "0";
+  m['1'] = "1";
+  m['2'] = "abc";
+  m['3'] = "def";
+  m['4'] = "ghi";
+  m['5'] = "jkl";
+  m['6'] = "mno";
+  m['7'] = "pqrs";
+  m['8'] = "tuv";
+  m['9'] = "wxyz";
+  vector<string> ans;
+  recursion(phoneNumber,ans,"", 0);
+  return ans;
+}
+```
