@@ -180,3 +180,74 @@ bool interweavingStrings(string one, string two, string three) {
   return rec(one,two,three,0,0,0);
 }
 ```
+### Solve Sudoku
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+bool valid(vector<vector<int>> &board,int i,int j,int sol){
+  for(int k=0;k<9;k++){
+     if(board[i][k] == sol || board[k][j] == sol)
+       return false;
+  }
+  i = (i/3) *3;
+  j = (j/3) *3;
+  for(int l=i;l<i+3;l++){
+    for(int m=j;m<j+3;m++){
+      if(board[l][m] == sol)
+        return false;
+    }
+  }
+  return true;
+}
+bool solveSudoku(vector<vector<int>> &board,int i,int j) {
+  if(j == 9){
+    j = 0;
+    i++;
+  }
+  if(i == 9)
+    return true;
+  if(board[i][j] != 0)
+    return solveSudoku(board,i,j+1);
+  
+  for(int sol = 1;sol < 10;sol++){
+    if(valid(board,i,j,sol)){
+      board[i][j] = sol;
+      if(solveSudoku(board,i,j+1))
+        return true;
+      board[i][j] = 0;
+    }
+  }
+  return false;
+}
+vector<vector<int>> solveSudoku(vector<vector<int>> board) {
+  solveSudoku(board,0,0);
+  return board;
+}
+```
+### 
+
+#### - CPP Solution
+```cpp
+```
+### 
+
+#### - CPP Solution
+```cpp
+```
+### 
+
+#### - CPP Solution
+```cpp
+```
+### 
+
+#### - CPP Solution
+```cpp
+```
+### 
+
+#### - CPP Solution
+```cpp
+```
