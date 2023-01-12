@@ -156,3 +156,27 @@ OrgChart *getLowestCommonManager(OrgChart *topManager, OrgChart *reportOne,
   return res;
 }
 ```
+### Interweaving Strings
+
+#### - CPP Solution
+```cpp
+using namespace std;
+bool rec(string one, string two, string three,int i,int j,int k) {
+  if(i>= three.size() && j>=one.size() && k>=two.size())
+    return true;
+  bool vaild = (j < one.size() && k < two.size());
+  if(vaild && three[i] == one[j] && three[i] == two[k]){
+    return rec(one,two,three,i+1,j+1,k) || rec(one,two,three,i+1,j,k+1);
+  }
+  if(j < one.size() && three[i] == one[j])
+    return rec(one,two,three,i+1,j+1,k);
+  if(k < two.size() && three[i] == two[k])
+    return rec(one,two,three,i+1,j,k+1);
+  return false;
+}
+bool interweavingStrings(string one, string two, string three) {
+  if(one.size() + two.size() != three.size())
+    return false;
+  return rec(one,two,three,0,0,0);
+}
+```
