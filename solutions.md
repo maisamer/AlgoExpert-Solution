@@ -226,10 +226,28 @@ vector<vector<int>> solveSudoku(vector<vector<int>> board) {
   return board;
 }
 ```
-### 
+### Generate Div Tags
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+void generateDivTags(vector<string> &ans,int op,int cl,string str) {
+  if(!op && !cl){
+    ans.push_back(str);
+    return;
+  }
+  if(op)
+    generateDivTags(ans,op-1,cl+1,str+"<div>");
+  if(cl)
+    generateDivTags(ans,op,cl-1,str+"</div>");
+}
+
+vector<string> generateDivTags(int numberOfTags) {
+  vector<string> ans;
+  generateDivTags(ans,numberOfTags,0,"");
+  return ans;
+}
 ```
 ### 
 
