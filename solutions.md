@@ -119,3 +119,40 @@ int staircaseTraversal(int height, int maxSteps) {
   return rec(height,maxSteps);
 }
 ```
+### Lowest Common Manager
+
+#### - CPP Solution
+```cpp
+using namespace std;
+class OrgChart {
+public:
+  char name;
+  vector<OrgChart *> directReports;
+
+  OrgChart(char name) {
+    this->name = name;
+    this->directReports = {};
+  }
+
+  void addDirectReports(vector<OrgChart *> directReports);
+};
+int getLowestCommonManager(OrgChart *topManager, OrgChart *reportOne,
+                                 OrgChart *reportTwo,OrgChart *&res) {
+  int counter = 0;
+  if(topManager->name == reportOne->name || topManager->name == reportTwo->name)
+    counter++;
+  for(auto &child:topManager->directReports)
+    counter += getLowestCommonManager(child,reportOne,reportTwo,res);
+  if(counter == 2){
+    res = topManager;
+    return 0;
+  }
+  return counter;
+}
+OrgChart *getLowestCommonManager(OrgChart *topManager, OrgChart *reportOne,
+                                 OrgChart *reportTwo) {
+  OrgChart *&res = topManager;
+  getLowestCommonManager(topManager,reportOne,reportTwo,res);
+  return res;
+}
+```
