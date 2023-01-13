@@ -249,10 +249,43 @@ vector<string> generateDivTags(int numberOfTags) {
   return ans;
 }
 ```
-### 
+### Ambiguous Measurements
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+map<string,int> m;
+string getStr(int low,int high){
+  return to_string(low)+":"+to_string(high);
+}
+bool canMeasure(vector<vector<int>> measuringCups, int low,
+                           int high) {
+  string key = getStr(low,high);
+  if(m.find(key) != m.end())
+    return m[key];
+  
+  if(low<=0 and high<=0)
+    return false;
+  
+  bool ans = false;
+  for(int i=0;i<measuringCups.size();i++){
+      if(low<=measuringCups[i][0] and measuringCups[i][1] <=high)
+        return true;
+      int newLow = max(0,low-measuringCups[i][0]);
+      int newHigh = max(0,high-measuringCups[i][1]);
+      ans = canMeasure(measuringCups,newLow,newHigh);
+      if(ans)
+         return true;
+  }
+  m[key] = ans;
+  return ans;
+}
+bool ambiguousMeasurements(vector<vector<int>> measuringCups, int low,
+                           int high) {
+  m = {};
+  return canMeasure(measuringCups,low,high);
+}
 ```
 ### 
 
