@@ -1,4 +1,4 @@
-## AlgoExpert Recursion 
+## AlgoExpert Recursion Problems
 
 ### Nth Fibonacci
 
@@ -287,15 +287,71 @@ bool ambiguousMeasurements(vector<vector<int>> measuringCups, int low,
   return canMeasure(measuringCups,low,high);
 }
 ```
-### 
+### Number of binary tree topologies
 
 #### - CPP Solution
 ```cpp
+using namespace std;
+map<int,int>m;
+int rec(int n) {
+  if(n == 0)
+    return 1;
+  if(m[n])
+    return m[n];
+  int ans = 0;
+  for(int i=0;i<n;i++){
+    ans += rec(i)*rec(n-1-i);
+  }
+  m[n] = ans;
+  return ans;
+}
+int numberOfBinaryTreeTopologies(int n) {
+  m = {};
+  if(n <= 1)
+    return 1;
+  return rec(n);
+}
 ```
-### 
+### Non-attacking queens
 
 #### - CPP Solution
 ```cpp
+using namespace std;
+bool valid(vector<vector<char>> grid,int n,int r,int c){
+    for(int t=0;t<n;t++)
+        if(grid[r][t] == 'q' or grid[t][c] == 'q')
+            return false;
+    for(int i=r,j=c;i<n&&j<n;i++,j++)
+        if(grid[i][j] == 'q')
+            return false;
+    for(int i=r,j=c;i>=0&&j>=0;i--,j--)
+        if(grid[i][j] == 'q')
+            return false;
+    for(int i=r,j=c;i>=0&&j<n;i--,j++)
+        if(grid[i][j] == 'q')
+            return false;
+    for(int i=r,j=c;i<0&&j>=n;i++,j--)
+        if(grid[i][j] == 'q')
+            return false;
+    return true;
+}
+int nonAttackingQueens(int r,int n,vector<vector<char>>grid) {
+  if(r == n)
+    return 1;
+  int count = 0;
+  for(int c=0;c<n;c++){
+    if(grid[r][c] == '.' and valid(grid,n,r,c)){
+      grid[r][c] = 'q';
+      count+=nonAttackingQueens(r+1,n,grid);
+      grid[r][c] = '.';
+    }
+  }
+  return count;
+}
+int nonAttackingQueens(int n) {
+  vector<vector<char>>grid (n,vector<char>(n,'.'));
+  return nonAttackingQueens(0,n,grid);
+}
 ```
 ### 
 
