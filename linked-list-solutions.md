@@ -1,4 +1,4 @@
-## AlgoExpert Array Problems
+## AlgoExpert Linked List Problems
 
 ### Remove duplicated from linked list
 
