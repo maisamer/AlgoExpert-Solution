@@ -50,10 +50,42 @@ bool hasSingleCycle(vector<int> array) {
   return false;
 }
 ```
-### 
+### Breadth First Search
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+
+class Node {
+public:
+  string name;
+  vector<Node *> children;
+
+  Node(string str) { name = str; }
+
+  vector<string> breadthFirstSearch(vector<string> *array) {
+    queue<Node *> q;
+    q.push(this);
+    while(!q.empty()){
+      int sz = q.size();
+      while(sz--){
+        Node *curr = q.front();
+        array->push_back(curr->name);
+        q.pop();
+        for(auto child : curr->children)
+          q.push(child);
+      }
+    }
+    return *array;
+  }
+
+  Node *addChild(string name) {
+    Node *child = new Node(name);
+    children.push_back(child);
+    return this;
+  }
+};
 ```
 ### 
 
