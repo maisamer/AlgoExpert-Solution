@@ -87,10 +87,34 @@ public:
   }
 };
 ```
-### 
+### River Sizes
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+bool valid(int x,int y,int n,int m){
+  return x>=0 and y>=0 and x<n and y<m;
+}
+int getRiverSize(vector<vector<int>> &matrix,int startX,int startY) {
+  if(!valid(startX,startY,matrix.size(),matrix[0].size()) or !matrix[startX][startY])
+    return 0;
+  matrix[startX][startY] = 0;
+  return 1 + getRiverSize(matrix,startX+1,startY)+
+  getRiverSize(matrix,startX,startY+1)+
+  getRiverSize(matrix,startX-1,startY)+
+  getRiverSize(matrix,startX,startY-1);
+}
+vector<int> riverSizes(vector<vector<int>> matrix) {
+  vector<int> ans;
+  for(int i=0;i<matrix.size();i++){
+    for(int j=0;j<matrix[i].size();j++){
+      if(matrix[i][j])
+        ans.push_back(getRiverSize(matrix,i,j));
+    }
+  }
+  return ans;
+}
 ```
 ### 
 
