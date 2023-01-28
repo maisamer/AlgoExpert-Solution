@@ -116,10 +116,89 @@ vector<int> riverSizes(vector<vector<int>> matrix) {
   return ans;
 }
 ```
-### 
+### Youngest Common Ancestor
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+
+class AncestralTree {
+public:
+  char name;
+  AncestralTree *ancestor;
+
+  AncestralTree(char name) {
+    this->name = name;
+    this->ancestor = nullptr;
+  }
+
+  void addAsAncestor(vector<AncestralTree *> descendants);
+};
+int getDepth(AncestralTree *root,AncestralTree *node){
+  if(node->name == root->name)
+    return 0;
+  return 1 + getDepth(root,node->ancestor);
+}
+
+AncestralTree *getYoungestCommonAncestor(AncestralTree *topAncestor,
+                                         AncestralTree *descendantOne,
+                                         AncestralTree *descendantTwo) {
+  int d1 = getDepth(topAncestor,descendantOne);
+  int d2 = getDepth(topAncestor,descendantTwo);
+  if(d1 > d2){
+    int steps = d1 - d2;
+    while(steps--){
+      descendantOne = descendantOne->ancestor;
+    }
+  }else{
+    int steps = d2 - d1;
+    while(steps--){
+      descendantTwo = descendantTwo->ancestor;
+    }
+  }
+  while(descendantOne->name != descendantTwo->name){
+    descendantTwo = descendantTwo->ancestor;
+    descendantOne = descendantOne->ancestor;
+  }
+  return descendantTwo;
+}
+```
+### Youngest Common Ancestor another approach 
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+
+class AncestralTree {
+public:
+  char name;
+  AncestralTree *ancestor;
+
+  AncestralTree(char name) {
+    this->name = name;
+    this->ancestor = nullptr;
+  }
+
+  void addAsAncestor(vector<AncestralTree *> descendants);
+};
+
+AncestralTree *getYoungestCommonAncestor(AncestralTree *node,
+                                         AncestralTree *descendantOne,
+                                         AncestralTree *descendantTwo) {
+  unordered_set<char> visited;
+  while(descendantOne){
+    visited.insert(descendantOne->name);
+    descendantOne = descendantOne->ancestor;
+  }
+  while(descendantTwo){
+    if(visited.find(descendantTwo->name) != visited.end())
+      return descendantTwo;
+    descendantTwo = descendantTwo->ancestor;
+  }
+  return nullptr;
+}
 ```
 ### 
 
