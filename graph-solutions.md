@@ -200,10 +200,51 @@ AncestralTree *getYoungestCommonAncestor(AncestralTree *node,
   return nullptr;
 }
 ```
-### 
+### Remove Islands
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
+bool valid(int x,int y,int n,int m){
+  return x>=0 and y>=0 and x<n and y<m;
+}
+void updateArea(vector<vector<int>> &matrix,int x,int y,int value,int n,int m){
+  if(!valid(x,y,n,m) or matrix[x][y] != 1)
+    return ;
+  matrix[x][y] = value;
+  updateArea(matrix,x+1,y,value,n,m);
+  updateArea(matrix,x,y+1,value,n,m);
+  updateArea(matrix,x-1,y,value,n,m);
+  updateArea(matrix,x,y-1,value,n,m);
+}
+vector<vector<int>> removeIslands(vector<vector<int>> matrix) {
+  int n = matrix.size();
+  int m = matrix[0].size();
+  for(int i=0;i<n;i++){
+    if(matrix[i][0] == 1)
+      updateArea(matrix,i,0,2,n,m);
+    if(matrix[i][m-1] == 1)
+      updateArea(matrix,i,m-1,2,n,m);
+  }
+  for(int i=0;i<m;i++){
+    if(matrix[0][i] == 1)
+      updateArea(matrix,0,i,2,n,m);
+    if(matrix[n-1][i] == 1)
+      updateArea(matrix,n-1,i,2,n,m);
+  }
+  for(int i=1;i<n-1;i++)
+    for(int j=1;j<m-1;j++)
+      if(matrix[i][j] == 1)
+        updateArea(matrix,i,j,0,n,m);
+        
+  for(int i=0;i<n;i++)
+    for(int j=0;j<m;j++)
+      if(matrix[i][j] == 2)
+        matrix[i][j] = 1;
+  
+  return matrix;
+}
 ```
 ### 
 
