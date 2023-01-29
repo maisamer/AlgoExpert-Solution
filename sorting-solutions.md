@@ -34,11 +34,25 @@ vector<int> bubbleSort(vector<int> array) {
   return array;
 }
 ```
-### Two Number Sum
+### Selection Sort
 
 #### - CPP Solution
 ```cpp
+#include <vector>
+using namespace std;
 
+vector<int> selectionSort(vector<int> array) {
+  // Write your code here.
+  for(int i=0;i<array.size()-1;i++){
+    int smIndex = i;
+    for(int j=i+1;j<array.size();j++){
+      if(array[j]<array[smIndex])
+        smIndex = j;
+    }
+    swap(array[i],array[smIndex]);
+  }
+  return array;
+}
 ```
 ### Two Number Sum
 
