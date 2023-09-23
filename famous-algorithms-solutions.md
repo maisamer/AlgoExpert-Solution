@@ -118,10 +118,64 @@ public:
   }
 };
 ```
-### 
+### kruskal's Algorithm
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public int[][][] kruskalsAlgorithm(int[][][] edges) {
+        // Write your code here.
+        int n = edges.length;
+        ArrayList<List<Integer>> sortedEdges = new ArrayList<>();
+        for(int source=0;source<n;source++)
+            for(int[] edge:edges[source])
+                if(source < edge[0])
+                    sortedEdges.add(Arrays.asList(source,edge[0],edge[1]));
+        sortedEdges.sort(Comparator.comparingInt(e -> e.get(2)));
+        int[]parents = new int[n];
+        int[]ranks = new int[n];
+        ArrayList<ArrayList<int[]>> mst = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            parents[i] = i;
+            ranks[i] = 0;
+            mst.add(new ArrayList<>());
+        }
+        for(List<Integer> edge:sortedEdges){
+            int vertex1Root = find(edge.get(0),parents);
+            int vertex2Root = find(edge.get(1),parents);
+            if(vertex1Root != vertex2Root){
+                mst.get(edge.get(0)).add(new int[]{edge.get(1),edge.get(2)});
+                mst.get(edge.get(1)).add(new int[]{edge.get(0),edge.get(2)});
+                union(vertex1Root,vertex2Root,parents,ranks);
+            }
+        }
+        int[][][] arrayMST = new int[n][][];
+        for(int i=0;i<mst.size();i++){
+            arrayMST[i] = new int[mst.get(i).size()][];
+            for(int j=0;j<mst.get(i).size();j++)
+                arrayMST[i][j] = mst.get(i).get(j);
+        }
+        return arrayMST;
+    }
+
+    private int find(Integer vertex, int[] parents) {
+        if(vertex != parents[vertex])
+            parents[vertex] = find(parents[vertex],parents);
+        return parents[vertex];
+    }
+    private void union(int vertex1Root, int vertex2Root, int[] parents, int[] ranks){
+        if(ranks[vertex1Root] > ranks[vertex2Root])
+            parents[vertex2Root] = vertex1Root;
+        else if (ranks[vertex2Root] >ranks[vertex1Root])
+            parents[vertex1Root] = vertex2Root;
+        else{
+            parents[vertex1Root] = vertex2Root;
+            ranks[vertex2Root]+=1;
+        }
+    }
+}
 ```
 ### 
 
