@@ -22,6 +22,29 @@ int maxSubsetSumNoAdjacent(vector<int> array) {
   return rec(array,0,0);
 }
 ```
+#### - another approach in java 
+```java
+import java.util.*;
+
+class Program {
+    public static int maxSubsetSumNoAdjacent(int[] array) {
+        // Write your code here.
+        if(array.length == 1)
+            return array[0];
+        if(array.length == 0)
+            return 0;
+        int second = array[0];
+        int first = Math.max(array[1],second);
+        for(int i=2;i<array.length;i++){
+            int current = Math.max(first,second+array[i]);
+            second = first;
+            first = current;
+        }
+        return first;
+    }
+}
+```
+
 ### Number Of Ways To Make Change
 
 #### - CPP Solution
