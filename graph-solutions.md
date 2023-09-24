@@ -334,10 +334,36 @@ class Program {
     }
 }
 ```
-### 
+### Two Colorable
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+
+    public boolean twoColorable(int[][] edges) {
+        // Write your code here.
+        int [] colors = new int[edges.length];
+        colors[0] = 1;
+        if(isTwoColorable(0,edges,colors,1,2))
+            return true;
+        return false;
+    }
+
+    private boolean isTwoColorable(int vertex, int[][] edges, int[] colors, int color, int opposite) {
+        for(int sibling : edges[vertex]){
+            if(colors[sibling] == 0){
+                colors[sibling] = opposite;
+                if(!isTwoColorable(sibling,edges,colors,opposite,color))
+                    return false;
+            } else if (color == colors[sibling]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
 ```
 ### 
 
