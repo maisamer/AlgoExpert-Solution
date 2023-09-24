@@ -246,10 +246,42 @@ vector<vector<int>> removeIslands(vector<vector<int>> matrix) {
   return matrix;
 }
 ```
-### 
+### cycle In Graph
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public boolean cycleInGraph(int[][] edges) {
+        // Write your code here.
+        Set<Integer> vis = new HashSet<>();
+        Set<Integer> inStack = new HashSet<>();
+        for(int i=0;i<edges.length;i++){
+            if(!vis.contains(i)){
+                if(hasCycle(i,edges,vis,inStack))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCycle(int vertex, int[][] edges, Set<Integer> vis, Set<Integer> inStack) {
+        vis.add(vertex);
+        inStack.add(vertex);
+        for(int i=0;i<edges[vertex].length;i++){
+            if(!vis.contains(edges[vertex][i])){
+                if(hasCycle(edges[vertex][i],edges,vis,inStack))
+                    return true;
+            }else{
+                if(inStack.contains(edges[vertex][i]))
+                    return true;
+            }
+        }
+        inStack.remove(vertex);
+        return false;
+    }
+}
 ```
 ### 
 
