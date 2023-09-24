@@ -98,9 +98,40 @@ int minNumberOfCoinsForChange(int n, vector<int> denoms) {
 ```cpp
 
 ```
-### 
+### longest Increasing Subsequence
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
 
+class Program {
+    public static List<Integer> longestIncreasingSubsequence(int[] array) {
+        // Write your code here.
+        int n = array.length;
+        int [] longSequence = new int[n];
+        Arrays.fill(longSequence,1);
+        int [] sequence = new int[n];
+        Arrays.fill(sequence,-1);
+        int ind = 0;
+        int mx = 1;
+        for(int i=1;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(array[i]>array[j] && longSequence[i]<=longSequence[j]+1){
+                    longSequence[i] = longSequence[j]+1;
+                    sequence[i] = j;
+                    if(mx < longSequence[i]){
+                        mx = longSequence[i];
+                        ind = i;
+                    }
+                }
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        while(ind != -1){
+            ans.add(0,array[ind]);
+            ind = sequence[ind];
+        }
+        return ans;
+    }
+}
 ```
