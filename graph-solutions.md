@@ -283,10 +283,56 @@ class Program {
     }
 }
 ```
-### 
+### minimum Passes Of Matrix
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public int minimumPassesOfMatrix(int[][] matrix) {
+        // Write your code here.
+        Queue<List<Integer>> q = new LinkedList<>();
+        int[] dx = new int[]{1,-1,0,0};
+        int[] dy = new int[]{0,0,1,-1};
+        int passes = 0;
+        int height = matrix.length;
+        int width = matrix[0].length;
+        for(int i=0;i<height;i++)
+            for(int j=0;j<width;j++)
+                if(matrix[i][j] > 0)
+                    q.add(List.of(i,j));
+        while(!q.isEmpty()){
+            int sz = q.size();
+            boolean countPass = false;
+            while (sz>0){
+                List<Integer> point = q.remove();
+                for(int i=0;i<4;i++){
+                    int x = point.get(0)+dx[i];
+                    int y = point.get(1)+dy[i];
+                    if(valid(x,y,height,width) && matrix[x][y] < 0) {
+                        if(!countPass){
+                          passes++;
+                          countPass = true;
+                        }
+                        q.add(List.of(x, y));
+                        matrix[x][y] *=-1;
+                    }
+                }
+                sz--;
+            }
+        }
+        for (int[] ints : matrix)
+            for (int anInt : ints)
+                if (anInt < 0)
+                    return -1;
+        return passes;
+    }
+
+    private boolean valid(int x, int y, int height, int width) {
+        return x<height && x>=0 && y<width && y>=0;
+    }
+}
 ```
 ### 
 
