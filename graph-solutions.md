@@ -365,10 +365,77 @@ class Program {
     }
 }
 ```
-### 
+### boggle Board
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public static List<String> boggleBoard(char[][] board, String[] words) {
+        // Write your code here.
+        int h = board.length,w=board[0].length;
+        Trie trie = new Trie();
+        for(String word : words)
+            trie.insert(word);
+        boolean[][] taken = new boolean[h][w];
+        Set<String> searchResultSet = new HashSet<>();
+        for(int i=0;i<h;i++){
+            for(int j=0;j<w;j++){
+                searchForWord(i,j,board,taken, trie.root, searchResultSet);
+            }
+        }
+        return new ArrayList<>(searchResultSet);
+    }
+
+    private static void searchForWord(int sx,int sy, char[][] board, boolean[][] taken,
+                                      TrieNode root, Set<String> searchResultSet) {
+        char currentChar = board[sx][sy];
+        if(taken[sx][sy] || !root.children.containsKey(currentChar))
+            return;
+        taken[sx][sy] = true;
+        TrieNode trieNode = root.children.get(currentChar);
+        if(trieNode.children.containsKey('*'))
+            searchResultSet.add(trieNode.word);
+        int[] dx = new int[]{1,-1,0,0,1,-1,1,-1};
+        int[] dy = new int[]{0,0,1,-1,1,-1,-1,1};
+        int h = board.length,w=board[0].length;
+        for(int i=0;i<8;i++){
+            int x = sx + dx[i];
+            int y = sy + dy[i];
+            if(valid(x,y,h,w)&&!taken[x][y]){
+                searchForWord(x,y,board,taken,trieNode,searchResultSet);
+            }
+        }
+        taken[sx][sy] = false;
+    }
+
+    private static boolean valid(int x,int y,int h,int w){
+        return x>=0&&x<h&&y>=0&&y<w;
+    }
+
+    public static class TrieNode{
+        Map<Character,TrieNode> children = new HashMap<>();
+        String word;
+    }
+
+    public static class Trie{
+        TrieNode root = new TrieNode();
+        char endSymbol = '*';
+        void insert(String word){
+            TrieNode curr = root;
+            for(int i=0;i<word.length();i++){
+                char c = word.charAt(i);
+                if(!curr.children.containsKey(c))
+                    curr.children.put(c,new TrieNode());
+                curr = curr.children.get(c);
+            }
+            curr.children.put(endSymbol,null);
+            curr.word = word;
+        }
+
+    }
+}
 ```
 ### 
 
