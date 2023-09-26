@@ -437,8 +437,77 @@ class Program {
     }
 }
 ```
+### Largest Island
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    // O(w^2 * h^2) time | O(w * h)
+    public int largestIsland(int[][] matrix) {
+        // Write your code here.
+        int mxLen = 0;
+        for(int i=0;i< matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                boolean[][] vis = new boolean[matrix.length][matrix[0].length];
+                if(matrix[i][j] > 0){
+                    matrix[i][j] = 0;
+                    mxLen = Math.max(dfs(i,j,matrix,vis),mxLen);
+                    matrix[i][j] = 1;
+                }
+            }
+        }
+        return mxLen == 0 ? matrix.length*matrix[0].length :mxLen;
+    }
+
+    private int dfs(int x, int y, int[][] matrix,boolean[][] vis) {
+        vis[x][y] = true;
+        int [] dx = {1,-1,0,0};
+        int [] dy = {0,0,1,-1};
+        int cnt = 1;
+        for(int i=0;i<4;i++){
+            int newX = x+dx[i];
+            int newY = y+dy[i];
+            if(valid(newX,newY, matrix.length ,matrix[0].length) && !vis[newX][newY]
+                    && matrix[newX][newY] == 0){
+                cnt+= dfs(newX,newY,matrix,vis);
+            }
+        }
+        return cnt;
+    }
+    private boolean valid(int x, int y, int height, int width) {
+        return x<height && x>=0 && y<width && y>=0;
+    }
+}
+```
 ### 
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+```
+### 
+
+#### - JAVA Solution
+```java
+```
+### 
+
+#### - JAVA Solution
+```java
+```
+### 
+
+#### - JAVA Solution
+```java
+```
+### 
+
+#### - JAVA Solution
+```java
+```
+### 
+
+#### - JAVA Solution
+```java
 ```
