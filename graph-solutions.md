@@ -444,7 +444,7 @@ class Program {
 import java.util.*;
 
 class Program {
-    // O(w^2 * h^2) time | O(w * h)
+    // O(w^2 * h^2) time | O(w * h) space
     public int largestIsland(int[][] matrix) {
         // Write your code here.
         int mxLen = 0;
@@ -481,10 +481,67 @@ class Program {
     }
 }
 ```
-### 
 
-#### - JAVA Solution
+#### - another Solution
 ```java
+import java.util.*;
+
+class Program {
+    final int [] dx = {1,-1,0,0};
+    final int [] dy = {0,0,1,-1};
+    // O(w * h) time | O(w * h) space
+    public int largestIsland(int[][] matrix) {
+        int mxSize = 0;
+        // Write your code here.
+        ArrayList<Integer> islandSizes = new ArrayList<>();
+        int islandId = 2;
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                if(matrix[i][j] == 0) {
+                    islandSizes.add(getIslandSize(i, j, matrix, islandId));
+                    islandId++;
+                }
+            }
+        }
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                if(matrix[i][j] == 1) {
+                    Set<Integer> adjIslands = new HashSet<>();
+                    int connectedIslandsSize = 0;
+                    for(int adj=0;adj<4;adj++){
+                        int newX = i+dx[adj];
+                        int newY = j+dy[adj];
+                        if(valid(newX,newY, matrix.length ,matrix[0].length) && matrix[newX][newY] != 1){
+                            if(adjIslands.contains( matrix[newX][newY]))
+                                continue;
+                            adjIslands.add(matrix[newX][newY]);
+                            connectedIslandsSize+=islandSizes.get(matrix[newX][newY]-2);
+                        }
+                    }
+                    mxSize = Math.max(connectedIslandsSize+1,mxSize);
+                }
+            }
+        }
+        return mxSize;
+    }
+
+    private Integer getIslandSize(int row, int col, int[][] matrix, int islandId) {
+        matrix[row][col] = islandId;
+        int cnt = 1;
+        for(int i=0;i<4;i++){
+            int newX = row+dx[i];
+            int newY = col+dy[i];
+            if(valid(newX,newY, matrix.length ,matrix[0].length) && matrix[newX][newY] == 0){
+                cnt+= getIslandSize(newX,newY,matrix,islandId);
+            }
+        }
+        return cnt;
+    }
+
+    private boolean valid(int x, int y, int height, int width) {
+        return x<height && x>=0 && y<width && y>=0;
+    }
+}
 ```
 ### 
 
