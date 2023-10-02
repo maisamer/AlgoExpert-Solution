@@ -118,6 +118,101 @@ public:
   }
 };
 ```
+### dijkstras Algorithm
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+tuple<int,int> getVertixWithMinDistance(vector<int> minDistance,unordered_set<int> visited){
+  int minDis = INT_MAX;
+  int vertix = 0;
+  for(int i=0;i<minDistance.size();i++){
+    if(visited.find(i) != visited.end())
+      continue;
+    if(minDistance[i]<=minDis){
+      minDis = minDistance[i];
+      vertix = i;
+    }
+  }
+  return {minDis,vertix};
+}
+
+vector<int> dijkstrasAlgorithm(int start, vector<vector<vector<int>>> edges) {
+  unordered_set<int> visited;
+  int vertices = edges.size();
+  vector<int> minDistance(vertices,INT_MAX);
+  minDistance[start] = 0;
+  while(visited.size() != vertices){
+    auto [currentMinDistance,vertix] = getVertixWithMinDistance(minDistance,visited);
+    if(currentMinDistance == INT_MAX)
+      break;
+    visited.insert(vertix);
+    for(auto edge:edges[vertix]){
+      if(visited.find(edge[0]) != visited.end())
+        continue;
+      minDistance[edge[0]] = min(minDistance[edge[0]],edge[1]+currentMinDistance);
+    }
+    
+  }
+  for(int i=0;i<vertices;i++)
+    if(minDistance[i]==INT_MAX)
+      minDistance[i] = -1;
+  return minDistance;
+}
+```
+### topological Sort
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+class Node{
+public:
+  int job;
+  vector<Node*> preq;
+  bool visited;
+  bool visiting;
+  Node(int job){
+    this->job = job;
+  }
+};
+class JobGraph{
+public:
+  unordered_map<int,Node*> graph;
+  JobGraph(vector<int> jobs,vector<vector<int>> deps){
+    for(int job:jobs)
+      graph[job] = new Node(job);
+    for(auto dep:deps)
+      graph[dep[1]]->preq.push_back(graph[dep[0]]);
+  }
+
+};
+bool dfs(JobGraph *graph,int job,vector<int>&orderedJobs){
+  if (graph->graph[job]->visited)
+    return false;
+  if (graph->graph[job]->visiting)
+    return true;
+  graph->graph[job]->visiting = true;
+  for(Node *node : graph->graph[job]->preq)
+    if(dfs(graph,node->job,orderedJobs))
+      return true;
+  graph->graph[job]->visited = true;
+  graph->graph[job]->visiting = false;
+  orderedJobs.push_back(job);
+  return false;
+}
+vector<int> topologicalSort(vector<int> jobs, vector<vector<int>> deps) {
+  vector<int> orderedJobs;
+  JobGraph* graph = new JobGraph(jobs,deps);
+  for(int job:jobs)
+    if(!graph->graph[job]->visited)
+      if(dfs(graph,job,orderedJobs))
+        return {};
+  return orderedJobs;
+}
+```
+
 ### kruskal's Algorithm
 
 #### - JAVA Solution
@@ -177,24 +272,65 @@ class Program {
     }
 }
 ```
-### 
+### knuth Morris Pratt Algorithm
 
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    // O(N + M) time and O(M) space
+    public static boolean knuthMorrisPrattAlgorithm(
+            String string, String substring
+    ) {
+        // Write your code here.
+        int [] pattern = buildPattern(substring);
+        return matchString(string,substring,pattern);
+    }
+
+    private static boolean matchString(String string, String substring, int[] pattern) {
+        int i = 0;
+        int j = 0;
+        while(i+substring.length()-j<=string.length()){
+            if(string.charAt(i) == substring.charAt(j)){
+                i++;
+                j++;
+                if(j == substring.length())
+                    return true;
+            }else{
+                if(j>0)
+                    j = pattern[j-1] + 1;
+                else
+                    i++;
+            }
+        }
+        return false;
+    }
+
+    private static int[] buildPattern(String substring) {
+        int [] pattern = new int[substring.length()];
+        Arrays.fill(pattern,-1);
+        int j = 0;
+        int i = 1;
+        while(i<substring.length()){
+            if(substring.charAt(i) == substring.charAt(j)){
+                pattern[i] = j;
+                i++;
+                j++;
+            }else{
+                if(j>0)
+                    j = pattern[j-1] + 1;
+                else
+                    i++;
+            }
+        }
+        return pattern;
+    }
+}
 ```
 ### 
 
-#### - CPP Solution
-```cpp
-```
-### 
-
-#### - CPP Solution
-```cpp
-```
-### 
-
-#### - CPP Solution
-```cpp
+#### - JAVA Solution
+```java
 ```
 ### 
