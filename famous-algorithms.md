@@ -328,9 +328,209 @@ class Program {
     }
 }
 ```
-### 
+### A* Algorithm
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+// Do not edit the class below except for the buildHeap,
+// siftDown, siftUp, peek, remove, and insert methods.
+// Feel free to add new properties and methods to the class.
+class Program {
+    public int[][] aStarAlgorithm(
+            int startRow, int startCol, int endRow, int endCol, int[][] graph
+    ) {
+        // Write your code here.
+        List<List<Node>> nodes = initialize(graph);
+        Node startNode = nodes.get(startRow).get(startCol);
+        Node endNode = nodes.get(endRow).get(endCol);
+        startNode.distanceFromStart = 0;
+        startNode.estimatedDistanceToEnd = calculateManhattanDistance(startNode,endNode);
+        List<Node> nodeToVisit = new ArrayList<>();
+        nodeToVisit.add(startNode);
+        MinHeap minHeap = new MinHeap(nodeToVisit);
+        while(!minHeap.isEmpty()){
+            Node current = minHeap.remove();
+            if(current == endNode)
+                break;
+            List<Node> neighbours = getNeighbouringNodes(current,nodes);
+            for(Node neighbour:neighbours){
+                int distance = current.distanceFromStart + 1;
+                if(distance >= neighbour.distanceFromStart)
+                    continue;
+                neighbour.cameFrom = current;
+                neighbour.distanceFromStart = distance;
+                neighbour.estimatedDistanceToEnd = distance +
+                        calculateManhattanDistance(neighbour,endNode);
+                if(minHeap.contain(neighbour)){
+                    minHeap.update(neighbour);
+                }else{
+                    minHeap.insert(neighbour);
+                }
+            }
+
+        }
+        return reconstructPath(endNode);
+    }
+
+    private int[][] reconstructPath(Node endNode) {
+        if(endNode.cameFrom == null)
+            return new int[][]{};
+        List<List<Integer>> pathList = new ArrayList<>();
+        Node current = endNode;
+        while(current != null){
+            pathList.add(List.of(current.row,current.col));
+            current = current.cameFrom;
+        }
+
+        int [][] path = new int[pathList.size()][2];
+        for(int i=0;i<pathList.size();i++){
+            path[i][0] = pathList.get(pathList.size()-1-i).get(0);
+            path[i][1] = pathList.get(pathList.size()-1-i).get(1);
+        }
+        return path;
+    }
+
+    private List<Node> getNeighbouringNodes(Node current, List<List<Node>> nodes) {
+        List<Node> neighbours = new ArrayList<>();
+        int numRows = nodes.size();
+        int numCols = nodes.get(0).size();
+        int row = current.row;
+        int col = current.col;
+        if(row+1 < numRows && nodes.get(row+1).get(col).value == 0)
+            neighbours.add(nodes.get(row+1).get(col));
+        if(row-1 >= 0 && nodes.get(row-1).get(col).value == 0)
+            neighbours.add(nodes.get(row-1).get(col));
+        if(col+1 < numCols && nodes.get(row).get(col+1).value == 0)
+            neighbours.add(nodes.get(row).get(col+1));
+        if(col-1 >= 0 && nodes.get(row).get(col-1).value == 0)
+            neighbours.add(nodes.get(row).get(col-1));
+        return neighbours;
+    }
+
+    private List<List<Node>> initialize(int[][] graph) {
+        List<List<Node>> nodes = new ArrayList<>();
+        for(int i=0;i<graph.length;i++){
+            List<Node> nodeList = new ArrayList<>();
+            nodes.add(nodeList);
+            for(int j=0;j<graph[i].length;j++){
+                nodes.get(i).add(new Node(i,j,graph[i][j]));
+            }
+        }
+        return nodes;
+    }
+
+    int calculateManhattanDistance(Node start,Node end){
+        return Math.abs(start.row - end.row) + Math.abs(start.col - end.col);
+    }
+
+    class Node{
+        String id;
+        int row;
+        int col;
+        int value;
+        Node cameFrom;
+        int distanceFromStart;
+        int estimatedDistanceToEnd;
+        public Node(int row, int col, int value) {
+            this.id = String.valueOf(row) + '-' + String.valueOf(col);
+            this.row = row;
+            this.col = col;
+            this.value = value;
+            this.cameFrom = null;
+            this.distanceFromStart = Integer.MAX_VALUE;
+            this.estimatedDistanceToEnd = Integer.MAX_VALUE;
+        }
+    }
+
+    class MinHeap {
+        List<Node> heap = new ArrayList<>();
+        Map<String,Integer> nodePositionInHeap = new HashMap<>();
+        public MinHeap(List<Node> array) {
+            for(int i=0;i<array.size();i++)
+                nodePositionInHeap.put(array.get(i).id,i);
+            heap = buildHeap(array);
+        }
+
+        public List<Node> buildHeap(List<Node> array) {
+            // Write your code here.
+            int firstParentIdx = (array.size() - 2)/2;
+            for(int currentIdx = firstParentIdx;currentIdx>=0;currentIdx--)
+                siftDown(currentIdx,array.size()-1,array);
+            return array;
+        }
+
+        public void siftDown(int currentIdx, int endIdx, List<Node> heap) {
+            // Write your code here.
+            int childOneIdx = currentIdx*2 + 1;
+            while(childOneIdx <= endIdx){
+                int childTwoIdx = childOneIdx + 1;
+                if(childTwoIdx > endIdx)
+                    childTwoIdx = -1;
+                if(childTwoIdx != -1 && heap.get(childTwoIdx).estimatedDistanceToEnd <
+                        heap.get(childOneIdx).estimatedDistanceToEnd)
+                    childOneIdx = childTwoIdx;
+                if(heap.get(childOneIdx).estimatedDistanceToEnd <
+                        heap.get(currentIdx).estimatedDistanceToEnd){
+                    swap(childOneIdx,currentIdx);
+                    currentIdx = childOneIdx;
+                    childOneIdx = currentIdx*2 + 1;
+                }else
+                    break;
+            }
+        }
+
+        private void swap(int i, int j) {
+            nodePositionInHeap.put(heap.get(i).id,j);
+            nodePositionInHeap.put(heap.get(j).id,i);
+            Node temp = heap.get(i);
+            heap.set(i,heap.get(j));
+            heap.set(j,temp);
+        }
+
+        void siftUp(int currentIdx) {
+            int parentIdx = (currentIdx - 1)/2;
+            while(currentIdx > 0 && heap.get(currentIdx).estimatedDistanceToEnd <
+                    heap.get(parentIdx).estimatedDistanceToEnd){
+                swap(currentIdx,parentIdx);
+                currentIdx = parentIdx;
+                parentIdx = (currentIdx - 1)/2;
+            }
+        }
+
+        Node peek() {
+            return heap.isEmpty() ? null : heap.get(0);
+        }
+
+        Node remove() {
+            if(heap.isEmpty())
+                return null;
+            Node removedElement = heap.get(0);
+            swap(0,heap.size()-1);
+            heap.remove(heap.size()-1);
+            nodePositionInHeap.remove(removedElement.id);
+            siftDown(0,heap.size()-1,heap);
+            return removedElement;
+        }
+
+        void insert(Node value) {
+            heap.add(value);
+            nodePositionInHeap.put(value.id,heap.size()-1);
+            siftUp(heap.size()-1);
+        }
+
+        boolean contain(Node node){
+            return nodePositionInHeap.containsKey(node.id);
+        }
+
+        void update(Node node){
+            siftUp(nodePositionInHeap.get(node.id));
+        }
+
+        public boolean isEmpty() {
+            return heap.isEmpty();
+        }
+    }
+}
 ```
-### 
