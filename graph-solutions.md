@@ -543,15 +543,158 @@ class Program {
     }
 }
 ```
-### 
+### rectangle Mania
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    final static String UP = "UP";
+    final static String LEFT = "LEFT";
+    final static String RIGHT = "RIGHT";
+    final static String DOWN = "DOWN";
+    // O(n^2) time | O(n^2) space
+    public static int rectangleMania(List<Integer[]> coords) {
+        // Write your code here.
+        Map<String,Map<String,List<Point>>> coordTable = getCoordTable(coords);
+        return getRectangleCount(coords,coordTable);
+    }
+
+    private static int getRectangleCount(List<Integer[]> coords, Map<String, Map<String, List<Point>>> coordTable) {
+        int rectangleCont = 0;
+        for(Integer [] coord:coords){
+            rectangleCont += clockWiseCountRectangle(new Point(coord[0],coord[1]),coordTable,UP,new Point(coord[0],coord[1]));
+        }
+        return rectangleCont;
+    }
+
+    private static int clockWiseCountRectangle(Point coord, Map<String, Map<String, List<Point>>> coordTable,
+                                               String direction, Point origin) {
+        String coordString = PointToString(coord);
+        if(direction == LEFT){
+            for(Point p : coordTable.get(coordString).get(LEFT)) 
+                if(p.x == origin.x && p.y == origin.y)
+                    return 1;
+            return 0;
+        }else{
+            int rectangleCont = 0;
+            String nextDirection = getNextDirection(direction);
+            for(Point p : coordTable.get(coordString).get(direction))
+                rectangleCont+=clockWiseCountRectangle(p,coordTable,nextDirection,origin);
+            return rectangleCont;
+        }
+    }
+
+    private static String getNextDirection(String direction) {
+        switch (direction){
+            case UP -> {
+                return RIGHT;
+            }
+            case RIGHT -> {
+                return DOWN;
+            }
+            case DOWN -> {
+                return LEFT;
+            }
+            default -> {
+                return "";
+            }
+        }
+    }
+
+    private static Map<String, Map<String, List<Point>>> getCoordTable(List<Integer[]> coords) {
+        Map<String, Map<String, List<Point>>> coordTable = new HashMap<>();
+        for(Integer [] coord1 : coords){
+            Point x = new Point(coord1[0],coord1[1]);
+            Map<String, List<Point>> coordDirections = new HashMap<>();
+            coordDirections.put(UP,new ArrayList<>());
+            coordDirections.put(DOWN,new ArrayList<>());
+            coordDirections.put(RIGHT,new ArrayList<>());
+            coordDirections.put(LEFT,new ArrayList<>());
+            for(Integer [] coord2:coords){
+                Point y = new Point(coord2[0],coord2[1]);
+                String direction = getPointDirection(x,y);
+                if(coordDirections.containsKey(direction)){
+                    coordDirections.get(direction).add(y);
+                }
+            }
+            coordTable.put(PointToString(x),coordDirections);
+        }
+        return coordTable;
+    }
+
+    private static String PointToString(Point x) {
+        return Integer.toString(x.x) + '-' + Integer.toString(x.y);
+    }
+
+    private static String getPointDirection(Point p1, Point p2) {
+        if(p1.x == p2.x) {
+            if (p1.y > p2.y)
+                return DOWN;
+            else if (p1.y < p2.y)
+                return UP;
+        } else if(p1.y == p2.y) {
+            if (p1.x > p2.x)
+                return LEFT;
+            else if (p1.x < p2.x)
+                return RIGHT;
+        }
+        return "";
+    }
+
+    static class Point {
+        public int x;
+        public int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+}
 ```
-### 
 
-#### - JAVA Solution
+#### - another Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static int rectangleMania(List<Integer[]> coords) {
+        // Write your code here.
+        int rectangleCount = 0;
+        Set<String> points = new HashSet<>();
+        for(int i=0;i<coords.size();i++){
+            points.add(String.valueOf(coords.get(i)[0]) +'-'+ String.valueOf(coords.get(i)[1]));
+        }
+        for(int i=0;i<coords.size();i++){
+            for(int j=0;j<coords.size();j++){
+                if(i == j)
+                    continue;
+                Point p1 = new Point(coords.get(i)[0],coords.get(i)[1]);
+                Point p2 = new Point(coords.get(j)[0],coords.get(j)[1]);
+                if(p1.x < p2.x && p1.y < p2.y){
+                    String upLeft = String.valueOf(p1.x)+'-'+String.valueOf(p2.y);
+                    String bottomRight = String.valueOf(p2.x)+'-'+String.valueOf(p1.y);
+                    if(points.contains(upLeft) && points.contains(bottomRight))
+                        rectangleCount++;
+                        
+                }
+            }
+        }
+        return rectangleCount;
+    }
+
+    static class Point {
+        public int x;
+        public int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+}
 ```
 ### 
 
