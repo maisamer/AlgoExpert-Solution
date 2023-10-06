@@ -1,5 +1,28 @@
 ## AlgoExpert Searching Problems
 
+### binary Search
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+  public static int binarySearch(int[] array, int target) {
+    int l = 0 , r = array.length-1;
+    while(l<=r){
+      int mid = (l+r) / 2;
+      if(array[mid] == target)
+        return mid;
+      else if(array[mid] > target)
+        r = mid - 1;
+      else
+        l = mid + 1;
+    }
+    return -1;
+  }
+}
+```
+
 ### search In Sorted Matrix
 
 #### - CPP Solution
@@ -67,10 +90,43 @@ class Program {
 
 }
 ```
-### 
+### find Three Largest Numbers
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static int[] findThreeLargestNumbers(int[] array) {
+        // Write your code here.
+        
+        int [] ans = new int[]{Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE};
+        for(int i=0;i<array.length;i++){
+            if(ans[0]<array[i]){
+                ans[2] = ans[1];
+                ans[1] = ans[0];
+                ans[0] = array[i];
+            }else if(ans[1]<array[i]){
+                ans[2] = ans[1];
+                ans[1] = array[i];
+            }else if(ans[2]<array[i]){
+                ans[2] = array[i];
+            }
+        }
+        return reverse(ans);
+    }
+    static int[] reverse(int a[])
+    {
+        int n = a.length;
+        int[] b = new int[n];
+        int j = n;
+        for (int i = 0; i < n; i++) {
+            b[j - 1] = a[i];
+            j = j - 1;
+        }
+        return b;
+    }
+}
 ```
 ### 
 
