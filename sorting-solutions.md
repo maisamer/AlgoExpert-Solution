@@ -56,7 +56,7 @@ vector<int> selectionSort(vector<int> array) {
 ```
 ### three Number Sort
 
-#### - CPP Solution
+#### - JAVA Solution
 ```java
 import java.util.*;
 
