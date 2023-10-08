@@ -159,10 +159,50 @@ class Program {
 }
 
 ```
-### 
+### quick select
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static int quickselect(int[] array, int k) {
+        // Write your code here.
+        return quickselect(array,k-1,0,array.length-1);
+    }
+
+    private static int quickselect(int[] array, int k, int start, int end) {
+        while (true) {
+            if (start > end)
+                throw new RuntimeException("Invalid Case");
+            int pivot = start;
+            int left = start + 1;
+            int right = end;
+            while (left <= right) {
+                if (array[left] > array[pivot] && array[right] < array[pivot])
+                    swap(left, right, array);
+                if (array[left] < array[pivot])
+                    left++;
+                if (array[right] > array[pivot])
+                    right--;
+            }
+            swap(right, pivot, array);
+            if (right == k)
+                return array[right];
+            if (k > right)
+                start = right + 1;
+            else
+                end = right - 1;
+        }
+    }
+
+    private static void swap(int i, int j, int[] array) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+}
 ```
 ### 
 
