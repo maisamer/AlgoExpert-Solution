@@ -230,10 +230,92 @@ class Program {
     }
 }
 ```
-### 
+### median Of Two Sorted Arrays
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    // O(log(min(m,n))) time | O(1) space
+    public float medianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {
+        // Write your code here.
+        int [] big = arrayOne.length >= arrayTwo.length ? arrayOne : arrayTwo;
+        int [] small = arrayOne.length < arrayTwo.length ? arrayOne : arrayTwo;
+        int l = 0,r = small.length-1;
+        int mergedPartIdx = (big.length+small.length-1) / 2;
+        while (true){
+            int smallerIdx = (int) Math.floor((double)(l+r)/2);
+            int bigIdx = mergedPartIdx - smallerIdx - 1;
+            int mxLeftSmall = smallerIdx>=0 ? small[smallerIdx]:Integer.MIN_VALUE;
+            int mnRightSmall = smallerIdx+1 < small.length ? small[smallerIdx+1]:Integer.MAX_VALUE;
+            int mxLeftBig = bigIdx>=0 ? big[bigIdx]:Integer.MIN_VALUE;
+            int mnRightBig = bigIdx+1 < big.length ? big[bigIdx+1]:Integer.MAX_VALUE;
+            if(mnRightBig < mxLeftSmall)
+                r = smallerIdx -1;
+            else if(mxLeftBig > mnRightSmall)
+                l = smallerIdx + 1;
+            else{
+                if((arrayOne.length+arrayTwo.length)%2 == 0){
+                    return (float)(Math.max(mxLeftBig,mxLeftSmall) + Math.min(mnRightSmall,mnRightBig))/2;
+                }
+                return Math.max(mxLeftBig,mxLeftSmall);
+            }
+        }
+    }
+}
+```
+
+#### - another Solution
+```java
+import java.util.*;
+
+class Program {
+    //O(n+m) time | O(1) space 
+    public float medianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {
+        // Write your code here.
+        int len = arrayOne.length+arrayTwo.length;
+        int mid = len/2;
+        int i1 = 0;
+        int i2 = 0;
+        float ans = 0;
+        Integer num1 = null,num2 = null;
+        while (mid>0){
+            if(i1 < arrayOne.length && i2 < arrayTwo.length){
+                if(arrayOne[i1] < arrayTwo[i2]) {
+                    num1 = arrayOne[i1];
+                    i1++;
+                }else if (arrayOne[i1] == arrayTwo[i2]){
+                    if(i1+1 >= arrayOne.length || arrayOne[i1+1] >= arrayTwo[i2+1]) {
+                        num1 = arrayTwo[i2];
+                        i2++;
+                    } else if(i2+1 >= arrayTwo.length || arrayOne[i1+1] < arrayTwo[i2+1]){
+                        num1 = arrayOne[i1];
+                        i1++;
+                    }
+                }
+                else {
+                    num1 = arrayTwo[i2];
+                    i2++;
+                }
+            }else if(i1 < arrayOne.length) {
+                num1 = arrayOne[i1];
+                i1++;
+            }else {
+                num1 = arrayTwo[i2];
+                i2++;
+            }
+            mid--;
+        }
+        if(i1 < arrayOne.length && i2 < arrayTwo.length){
+            num2 =  Math.min(arrayOne[i1], arrayTwo[i2]);
+        }else if(i1 < arrayOne.length)
+            num2 = arrayOne[i1];
+        else
+            num2 = arrayTwo[i2];
+        return len%2 == 0?  (float) (num2+num1)/2:num2;
+    }
+}
 ```
 ### 
 
@@ -247,11 +329,3 @@ class Program {
 ```
 ### 
 
-#### - JAVA Solution
-```java
-```
-### 
-
-#### - JAVA Solution
-```java
-```
