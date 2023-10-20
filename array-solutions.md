@@ -59,3 +59,128 @@ class Program {
     }
 }
 ```
+### Apartment Hunting
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public static int apartmentHunting(
+            List<Map<String, Boolean>> blocks, String[] reqs
+    ) {
+        // Write your code here.
+        int[] maxDistanceAtBlocks = new int[blocks.size()];
+        Arrays.fill(maxDistanceAtBlocks,Integer.MIN_VALUE);
+        int idx = 0;
+        int mn = Integer.MAX_VALUE;
+        for(int i=0;i< blocks.size();i++){
+            for(int j=0;j< reqs.length;j++){
+                int farestDistance = Integer.MAX_VALUE;
+                for(int k=0;k< blocks.size();k++){
+                    if(blocks.get(k).get(reqs[j])){
+                        farestDistance = Math.min(Math.abs(i-k),farestDistance);
+                    }
+                }
+                maxDistanceAtBlocks[i]=Math.max(maxDistanceAtBlocks[i],farestDistance);
+            }
+        }
+        for(int i=0;i< blocks.size();i++){
+            if(mn>maxDistanceAtBlocks[i]){
+                idx = i;
+                mn = maxDistanceAtBlocks[i];
+            }
+        }
+        return idx;
+    }
+}
+```
+
+#### - Another Solution
+```java
+import java.util.*;
+
+class Program {
+    public static int apartmentHunting(
+            List<Map<String, Boolean>> blocks, String[] reqs
+    ) {
+        // Write your code here.
+        int[][] mnDistanceAtBlocks = new int[reqs.length][blocks.size()];
+        for(int i=0;i< reqs.length;i++){
+            for(int k=0;k< blocks.size();k++){
+                mnDistanceAtBlocks[i][k] = Integer.MAX_VALUE;
+                if(blocks.get(k).get(reqs[i])){
+                    mnDistanceAtBlocks[i][k] = 0;
+                }else{
+                    if(k>0){
+                        mnDistanceAtBlocks[i][k] = mnDistanceAtBlocks[i][k-1] == Integer.MAX_VALUE?
+                                mnDistanceAtBlocks[i][k-1]:mnDistanceAtBlocks[i][k-1]+1;
+                    }
+                }
+            }
+            for(int k=blocks.size()-2;k>=0;k--){
+                mnDistanceAtBlocks[i][k] = Math.min(mnDistanceAtBlocks[i][k],mnDistanceAtBlocks[i][k+1]+1);
+            }
+        }
+        int [] maxDistanceAtBlocks = new int[blocks.size()];
+        for(int j=0;j< blocks.size();j++) {
+            int mxDistance = Integer.MIN_VALUE;
+            for (int i = 0; i < reqs.length; i++) {
+                mxDistance = Math.max(mxDistance,mnDistanceAtBlocks[i][j]);
+            }
+            maxDistanceAtBlocks[j] = mxDistance;
+        }
+        int idx = 0;
+        int mn = Integer.MAX_VALUE;
+        for(int i=0;i< blocks.size();i++){
+            if(mn>maxDistanceAtBlocks[i]){
+                idx = i;
+                mn = maxDistanceAtBlocks[i];
+            }
+        }
+        return idx;
+    }
+}
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
