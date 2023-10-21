@@ -1110,14 +1110,98 @@ class Program {
 ```java
 ```
 
-### 
+### Line Through Points
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public int lineThroughPoints(int[][] points) {
+        // Write your code here.
+        int mxCount = Integer.MIN_VALUE;
+        for(int i=0;i<points.length;i++){
+            for(int j=1;j<points.length;j++){
+                int count = 0;
+                for(int k=0;k<points.length;k++){
+                    if(inSameLine(points[i],points[j],points[k]))
+                        count++;
+                }
+                mxCount = Math.max(mxCount,count-2);
+            }
+        }
+        return mxCount;
+    }
+
+    private boolean inSameLine(int[] p1, int[] p2, int[] p3) {
+        return (p2[0]-p1[0]) * (p3[1]-p1[1]) - (p2[1]-p1[1]) * (p3[0]-p1[0]) < 0;
+    }
+}
 ```
 
-### 
-
-#### - JAVA Solution
+#### - Another Solution
 ```java
+import java.util.*;
+
+class Program {
+  
+    public int lineThroughPoints(int[][] points) {
+        // Write your code here.
+        int mxCount = Integer.MIN_VALUE;
+        for(int i=0;i<points.length;i++){
+            Map<String,Integer> slopes = new HashMap<>();
+            for(int j=i+1;j<points.length;j++){
+                int [] slope = getSlope(points[i],points[j]);
+                String key = getKey(slope);
+                if(slopes.containsKey(key))
+                    slopes.put(key,slopes.get(key)+1);
+                else
+                    slopes.put(key,2);
+            }
+            mxCount = Math.max(mxCount,getMaxSlopesPoints(slopes));
+        }
+        return mxCount;
+    }
+
+    private int getMaxSlopesPoints(Map<String, Integer> slopes) {
+        int mxCount = 1;
+        for(String key: slopes.keySet())
+            mxCount = Math.max(slopes.get(key),mxCount);
+        return mxCount;
+    }
+
+    private String getKey(int[] slope) {
+        return String.valueOf(slope[0]) + ":" + String.valueOf(slope[1]);
+    }
+
+    private int[] getSlope(int[] p1, int[] p2) {
+        int [] slope = new int[]{1,0};
+        if(p1[0] != p2[0]){
+            int xDiff = p1[0] - p2[0];
+            int yDiff = p1[1] - p2[1];
+            int gcd = gcd(Math.abs(xDiff),Math.abs(yDiff));
+            xDiff/=gcd;
+            yDiff/=gcd;
+            if(xDiff < 0){
+              xDiff*=-1;
+              yDiff*=-1;
+            }
+            slope = new int[]{yDiff,xDiff};
+        }
+        return slope;
+    }
+
+    static int gcd(int a, int b)
+    {
+        while(true){
+          if(a == 0)
+            return b;
+          if (b == 0)
+              return a;
+          int temp = a;
+          a = b;
+          b = temp%b;
+        }
+    }
+}
 ```
