@@ -534,3 +534,54 @@ class Program {
     }
 }
 ```
+### prims Algorithm
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public int[][][] primsAlgorithm(int[][][] edges) {
+        // Write your code here.
+        List<List<int[]>> mstList = new ArrayList<>();
+        int[][][] mst = new int[edges.length][][];
+        PriorityQueue<Item> minHeap = new PriorityQueue<>();
+        for(int[] edge:edges[0])
+            minHeap.add(new Item(0,edge[0],edge[1]));
+        for(int i=0;i<edges.length;i++)
+            mstList.add(new ArrayList<>());
+        while (!minHeap.isEmpty()){
+            Item item = minHeap.remove();
+            if(mstList.get(item.destination).isEmpty()) {
+                mstList.get(item.vertex).add(new int[]{item.destination, item.weight});
+                mstList.get(item.destination).add(new int[]{item.vertex, item.weight});
+                for (int[] edge : edges[item.destination])
+                    if (mstList.get(edge[0]).isEmpty())
+                        minHeap.add(new Item(item.destination, edge[0], edge[1]));
+            }
+        }
+        for(int i=0;i< mstList.size();i++){
+            mst[i] = new int[mstList.get(i).size()][];
+            for(int j=0;j<mstList.get(i).size();j++)
+                mst[i][j] = mstList.get(i).get(j);
+        }
+        return mst;
+    }
+    class Item implements Comparable<Item>{
+        int vertex;
+        int destination;
+        int weight;
+
+        public Item(int vertex, int destination, int weight) {
+            this.vertex = vertex;
+            this.destination = destination;
+            this.weight = weight;
+        }
+        @Override
+        public int compareTo(Item other) {
+            // Compare items based on their weight
+            return Integer.compare(this.weight, other.weight);
+        }
+    }
+}
+```
