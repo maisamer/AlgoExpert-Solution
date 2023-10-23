@@ -1080,10 +1080,113 @@ class Program {
 }
 ```
 
-### 
+### Calendar Matching
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static List<StringMeeting> calendarMatching(
+            List<StringMeeting> calendar1,
+            StringMeeting dailyBounds1,
+            List<StringMeeting> calendar2,
+            StringMeeting dailyBounds2,
+            int meetingDuration
+    ) {
+        // Write your code here.
+        List<Meeting> updatedCalendar1 = updateCalendar(calendar1,dailyBounds1);
+        List<Meeting> updatedCalendar2 = updateCalendar(calendar2,dailyBounds2);
+        List<Meeting> mergedMeetings = mergeMeetings(updatedCalendar1,updatedCalendar2);
+        List<Meeting> flattenMeetings = flattingMeeting(mergedMeetings);
+        return getAvailabilities(flattenMeetings,meetingDuration);
+    }
+
+    private static List<StringMeeting> getAvailabilities(List<Meeting> flattenMeetings, int meetingDuration) {
+        List<StringMeeting> availableMeetings = new ArrayList<>();
+        for(int i=1;i<flattenMeetings.size();i++){
+            int start = flattenMeetings.get(i-1).end;
+            int end = flattenMeetings.get(i).start;
+            if(end - start >= meetingDuration){
+                availableMeetings.add(new StringMeeting(convertMinuteToTime(start),convertMinuteToTime(end)));
+            }
+        }
+        return availableMeetings;
+    }
+
+    private static String convertMinuteToTime(int minutes) {
+        int hours = minutes/60;
+        int reminder = minutes%60;
+        String minuteString = reminder < 10 ? '0'+String.valueOf(reminder):String.valueOf(reminder);
+        return String.valueOf(hours) + ':' + minuteString;
+    }
+
+    private static List<Meeting> flattingMeeting(List<Meeting> mergedMeetings) {
+        List<Meeting> meetings = new ArrayList<>();
+        meetings.add(mergedMeetings.get(0));
+        for(int i=1;i<mergedMeetings.size();i++){
+            Meeting prev = meetings.get(meetings.size()-1);
+            Meeting current = mergedMeetings.get(i);
+            if(prev.end >= current.start)
+                prev.end = Math.max(prev.end, current.end);
+            else
+                meetings.add(current);
+        }
+        return meetings;
+    }
+
+    private static List<Meeting> mergeMeetings(List<Meeting> updatedCalendar1, List<Meeting> updatedCalendar2) {
+        int i1 = 0,i2 = 0;
+        List<Meeting> meetings = new ArrayList<>();
+        while (i1<updatedCalendar1.size() && i2<updatedCalendar2.size()){
+            if(updatedCalendar1.get(i1).start <= updatedCalendar2.get(i2).start)
+                meetings.add(updatedCalendar1.get(i1++));
+            else
+                meetings.add(updatedCalendar2.get(i2++));
+        }
+        while (i1<updatedCalendar1.size())
+            meetings.add(updatedCalendar1.get(i1++));
+        while (i2<updatedCalendar2.size())
+            meetings.add(updatedCalendar2.get(i2++));
+        return meetings;
+    }
+
+    private static List<Meeting> updateCalendar(List<StringMeeting> calendar1, StringMeeting dailyBounds1) {
+        calendar1.add(0,new StringMeeting("0:00",dailyBounds1.start));
+        calendar1.add(new StringMeeting(dailyBounds1.end,"23:59"));
+        List<Meeting> updatedMeeting = new ArrayList<>();
+        for(StringMeeting meeting:calendar1){
+            updatedMeeting.add(new Meeting(convertTimeToMinute(meeting.start),convertTimeToMinute(meeting.end)));
+        }
+        return updatedMeeting;
+    }
+
+    private static int convertTimeToMinute(String time) {
+        int delimiterIdx = time.indexOf(":");
+        int hour = Integer.parseInt(time.substring(0,delimiterIdx));
+        int minutes = Integer.parseInt(time.substring(delimiterIdx+1));
+        return hour*60 + minutes;
+    }
+
+    static class Meeting {
+        public int start;
+        public int end;
+
+        public Meeting(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+    static class StringMeeting {
+        public String start;
+        public String end;
+
+        public StringMeeting(String start, String end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+}
 ```
 
 ### 
