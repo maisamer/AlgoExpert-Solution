@@ -1189,28 +1189,55 @@ class Program {
 }
 ```
 
-### 
+### Waterfall Streams
 
 #### - JAVA Solution
 ```java
-```
+import java.util.*;
 
-### 
-
-#### - JAVA Solution
-```java
-```
-
-### 
-
-#### - JAVA Solution
-```java
-```
-
-### 
-
-#### - JAVA Solution
-```java
+class Program {
+    public double[] waterfallStreams(double[][] array, int source) {
+        // Write your code here.
+        double[] rowAbove = array[0].clone();
+        rowAbove[source] = -1;
+        for(int i=0;i<array.length;i++){
+            double[] currentRow = array[i].clone();
+            for(int j=0;j<currentRow.length;j++){
+                if(rowAbove[j] >= 0)
+                    continue;
+                if(currentRow[j] != 1){
+                    currentRow[j]+=rowAbove[j];
+                    continue;
+                }
+                double halfWater = rowAbove[j]/2;
+                int left = j-1;
+                while (left>=0){
+                    if(rowAbove[left] == 1)
+                        break;
+                    if(currentRow[left] != 1) {
+                        currentRow[left]+=halfWater;
+                        break;
+                    }
+                    left--;
+                }
+                int right = j+1;
+                while (right<currentRow.length){
+                    if(rowAbove[right] == 1)
+                        break;
+                    if(currentRow[right] != 1) {
+                        currentRow[right]+=halfWater;
+                        break;
+                    }
+                    right++;
+                }
+            }
+            rowAbove = currentRow;
+        }
+        for(int i=0;i<rowAbove.length;i++)
+            rowAbove[i]*=-100;
+        return rowAbove;
+    }
+}
 ```
 
 ### Line Through Points
