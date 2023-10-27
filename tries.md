@@ -104,6 +104,58 @@ class Program {
     }
 }
 ```
+#### - Another Solution
+```java
+import java.util.*;
+
+class Program {
+    public static List<Boolean> multiStringSearch(
+            String bigString, String[] smallStrings
+    ) {
+        Trie trie = new Trie();
+        for(String str:smallStrings)
+            trie.insert(str);
+        ArrayList<Boolean> searchResults = new ArrayList<>();
+        Set<String> containedStr = new HashSet<>();
+        for(int i=0;i<bigString.length();i++)
+            findSmallString(bigString,i, trie.root,containedStr);
+        for(String str:smallStrings)
+            searchResults.add(containedStr.contains(str));
+        return searchResults;
+    }
+    public static boolean findSmallString(String big,int startIdx,TrieNode root,Set<String> containedStr){
+        TrieNode curr = root;
+        for(int i=startIdx;i<big.length();i++){
+            char c = big.charAt(i);
+            if(!curr.children.containsKey(c))
+                return false;
+            curr = curr.children.get(c);
+            if(curr.children.containsKey('*'))
+                containedStr.add(curr.word);
+        }
+        return true;
+    }
+    static class TrieNode{
+        Map<Character,TrieNode> children = new HashMap<>();
+        String word;
+    }
+
+    static class Trie{
+        TrieNode root = new TrieNode();
+
+        void insert(String str){
+            TrieNode curr = root;
+            for(int i=0;i<str.length();i++){
+                if(!curr.children.containsKey(str.charAt(i)))
+                    curr.children.put(str.charAt(i),new TrieNode());
+                curr =  curr.children.get(str.charAt(i));
+            }
+            curr.children.put('*',null);
+            curr.word = str;
+        }
+    }
+}
+```
 ### Longest Most Frequent Prefix
 
 #### - JAVA Solution
