@@ -368,7 +368,137 @@ class Program {
     }
 }
 ```
+### Max Path Sum In Binary Tree
 
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public static int maxSum;
+    public static int maxPathSum(BinaryTree tree) {
+        // Write your code here.
+        maxSum = tree.value;
+        maxPathSumHelper(tree);
+        return maxSum;
+    }
+
+    private static int maxPathSumHelper(BinaryTree tree) {
+        if(tree == null)
+            return 0;
+        int left = maxPathSumHelper(tree.left);
+        int right = maxPathSumHelper(tree.right);
+        maxSum = Math.max(maxSum,Math.max(left+right + tree.value,Math.max(right + tree.value,left + tree.value)));
+        return Math.max(left,right) + tree.value;
+    }
+
+    static class BinaryTree {
+        public int value;
+        public BinaryTree left;
+        public BinaryTree right;
+
+        public BinaryTree(int value) {
+            this.value = value;
+        }
+    }
+}
+```
+### Find Nodes Distance K
+
+#### - CPP Solution
+```cpp
+using namespace std;
+
+// This is an input class. Do not edit.
+class BinaryTree {
+public:
+  int value;
+  BinaryTree *left = nullptr;
+  BinaryTree *right = nullptr;
+
+  BinaryTree(int value) { this->value = value; }
+};
+void convertBTToGraph(BinaryTree* tree,unordered_map<int,vector<int>>&graph){
+  if(tree == nullptr)
+    return;
+  if(tree->left != nullptr){
+    graph[tree->value].push_back(tree->left->value);
+    graph[tree->left->value].push_back(tree->value);
+    convertBTToGraph(tree->left,graph);
+  }
+  if(tree->right != nullptr){
+    graph[tree->value].push_back(tree->right->value);
+    graph[tree->right->value].push_back(tree->value);
+    convertBTToGraph(tree->right,graph);
+  }
+}
+vector<int> findNodesDistanceK(BinaryTree *tree, int target, int k) {
+  // convert BT to graph
+  unordered_map<int,vector<int>> graph;
+  vector<int> ans;
+  convertBTToGraph(tree,graph);
+  queue<int>q;
+  unordered_set<int> vis;
+  q.push(target);
+  while(!q.empty() and k > 0){
+    int sz = q.size();
+    while(sz--){
+      int curr = q.front();
+      q.pop();
+      vis.insert(curr);
+      for(int child : graph[curr])
+        if(vis.find(child) == vis.end())
+          q.push(child); 
+    }
+    k--;
+  }
+  while(!q.empty()){
+    ans.push_back(q.front());
+    q.pop();
+  }
+  return ans;
+}
+```
+### Right Sibling Tree Helper
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+
+// This is the class of the input root. Do not edit it.
+class BinaryTree {
+public:
+  int value;
+  BinaryTree *left = nullptr;
+  BinaryTree *right = nullptr;
+
+  BinaryTree(int value);
+};
+
+void rightSiblingTreeHelper(BinaryTree *node,BinaryTree *parent,bool isLeft) {
+  if(!node)
+    return;
+  BinaryTree *left = node->left,*right = node->right;
+  rightSiblingTreeHelper(left,node,true);
+  if(!parent)
+    node->right = nullptr;
+  else if(isLeft){
+    node->right = parent->right;
+  }else{
+    if(!parent->right)
+      node->right = nullptr;
+    else
+      node->right = parent->right->left;
+  }
+  rightSiblingTreeHelper(right,node,false);
+}
+
+BinaryTree *rightSiblingTree(BinaryTree *root) {
+  rightSiblingTreeHelper(root,nullptr,false);
+  return root;
+}
+```
 ### Iterative InOrder Traversal
 
 #### - JAVA Solution
