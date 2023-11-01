@@ -587,3 +587,66 @@ class Program {
     }
 }
 ```
+
+#### - Another Solution
+```java
+
+```
+### Right Sibling Tree
+
+#### - CPP Solution
+```cpp
+#include <vector>
+using namespace std;
+
+// This is the class of the input root. Do not edit it.
+class BinaryTree {
+public:
+  int value;
+  BinaryTree *left = nullptr;
+  BinaryTree *right = nullptr;
+
+  BinaryTree(int value);
+};
+
+void rightSiblingTreeHelper(BinaryTree *node,BinaryTree *parent,bool isLeft) {
+  if(!node)
+    return;
+  BinaryTree *left = node->left,*right = node->right;
+  rightSiblingTreeHelper(left,node,true);
+  if(!parent)
+    node->right = nullptr;
+  else if(isLeft){
+    node->right = parent->right;
+  }else{
+    if(!parent->right)
+      node->right = nullptr;
+    else
+      node->right = parent->right->left;
+  }
+  rightSiblingTreeHelper(right,node,false);
+}
+
+BinaryTree *rightSiblingTree(BinaryTree *root) {
+  rightSiblingTreeHelper(root,nullptr,false);
+  return root;
+}
+```
+###
+
+#### - JAVA Solution
+```java
+
+```
+###
+
+#### - JAVA Solution
+```java
+
+```
+###
+
+#### - JAVA Solution
+```java
+
+```
