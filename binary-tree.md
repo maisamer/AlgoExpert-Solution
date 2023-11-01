@@ -632,21 +632,151 @@ BinaryTree *rightSiblingTree(BinaryTree *root) {
   return root;
 }
 ```
-###
+### All Kinds Of Node Depths
 
 #### - JAVA Solution
 ```java
+import java.util.*;
 
+class Program {
+    // average case : O(nlog(n)) time | O(h) space
+    public static int allKindsOfNodeDepths(BinaryTree root) {
+        // Write your code here.
+        if(root == null)
+            return 0;
+        return nodeDepths(root,0) + allKindsOfNodeDepths(root.left) + allKindsOfNodeDepths(root.right);
+    }
+
+    static int nodeDepths(BinaryTree root,int depth) {
+        if(root == null)
+            return 0;
+        return depth + nodeDepths(root.left,depth+1) + nodeDepths(root.right,depth+1);
+    }
+
+    static class BinaryTree {
+        int value;
+        BinaryTree left;
+        BinaryTree right;
+
+        public BinaryTree(int value) {
+            this.value = value;
+            left = null;
+            right = null;
+        }
+    }
+}
 ```
-###
 
-#### - JAVA Solution
+#### - Optimal Solution
 ```java
+import java.util.*;
 
+class Program {
+    // O(n) time | O(n) space
+    public static int allKindsOfNodeDepths(BinaryTree root) {
+        // Write your code here.
+        Map<BinaryTree,Integer> count = new HashMap<>();
+        Map<BinaryTree,Integer> depth = new HashMap<>();
+        nodeCount(root,count);
+        nodeDepth(root,count,depth);
+        return sumAllDepth(root,depth);
+    }
+
+    private static int sumAllDepth(BinaryTree root, Map<BinaryTree, Integer> depth) {
+        if(root == null)
+            return 0;
+        return depth.get(root) + sumAllDepth(root.left,depth) + sumAllDepth(root.right,depth);
+    }
+
+    private static void nodeDepth(BinaryTree root, Map<BinaryTree, Integer> count, Map<BinaryTree, Integer> depth) {
+        depth.put(root,0);
+        if(root.left != null){
+            nodeDepth(root.left,count,depth);
+            int total = depth.get(root) + depth.get(root.left) + count.get(root.left);
+            depth.put(root,total);
+        }
+        if(root.right != null){
+            nodeDepth(root.right,count,depth);
+            int total = depth.get(root) + depth.get(root.right) + count.get(root.right);
+            depth.put(root,total);
+        }
+    }
+
+    private static void nodeCount(BinaryTree root, Map<BinaryTree, Integer> count) {
+        count.put(root,1);
+        if(root.left != null){
+            nodeCount(root.left,count);
+            int total = count.get(root) + count.get(root.left);
+            count.put(root,total);
+        }
+        if(root.right != null){
+            nodeCount(root.right,count);
+            int total = count.get(root) + count.get(root.right);
+            count.put(root,total);
+        }
+    }
+
+
+    static class BinaryTree {
+        int value;
+        BinaryTree left;
+        BinaryTree right;
+
+        public BinaryTree(int value) {
+            this.value = value;
+            left = null;
+            right = null;
+        }
+    }
+}
 ```
-###
 
-#### - JAVA Solution
+#### - Most optimal Solution
+
 ```java
+import java.util.*;
 
+class Program {
+    // O(n) time | O(h) space
+    public static int allKindsOfNodeDepths(BinaryTree root) {
+        return getTreeInfo(root).allDepthSum;
+    }
+
+    public static TreeInfo getTreeInfo(BinaryTree root){
+        if(root == null)
+            return new TreeInfo(0,0,0);
+        TreeInfo left = getTreeInfo(root.left);
+        TreeInfo right = getTreeInfo(root.right);
+        int numOfNode = 1 + left.totalNodes + right.totalNodes;
+        int depth = left.depth + left.totalNodes + right.depth + right.totalNodes;
+        int totalDepth = depth + left.allDepthSum + right.allDepthSum;
+        return new TreeInfo(totalDepth,depth,numOfNode);
+    }
+
+
+    static class TreeInfo{
+        int allDepthSum;
+        int depth;
+        int totalNodes;
+
+        public TreeInfo(int allDepthSum, int depth, int totalNodes) {
+            this.allDepthSum = allDepthSum;
+            this.depth = depth;
+            this.totalNodes = totalNodes;
+        }
+    }
+
+
+    static class BinaryTree {
+        int value;
+        BinaryTree left;
+        BinaryTree right;
+
+        public BinaryTree(int value) {
+            this.value = value;
+            left = null;
+            right = null;
+        }
+    }
+}
 ```
