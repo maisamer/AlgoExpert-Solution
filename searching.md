@@ -317,15 +317,46 @@ class Program {
     }
 }
 ```
-### 
+### Optimal Assembly Line
 
 #### - JAVA Solution
 ```java
-```
-### 
+import java.util.*;
 
-#### - JAVA Solution
-```java
-```
-### 
+class Program {
+    public int optimalAssemblyLine(int[] stepDurations, int numStations) {
+        // Write your code here.
+        int maxStationDuration = Integer.MAX_VALUE;
+        int left = 0;
+        int right = 0;
+        for(int stepDuration:stepDurations){
+            left = Math.max(left,stepDuration);
+            right+=stepDuration;
+        }
+        while (left<=right){
+            int potentialValue = (left+right)/2;
+            if(isCorrectPotentialValue(stepDurations,numStations,potentialValue)){
+                right = potentialValue-1;
+                maxStationDuration = potentialValue;
+            }else 
+                left = potentialValue+1;
+        }
+        return maxStationDuration;
+    }
 
+    private boolean isCorrectPotentialValue(int[] stepDurations, int numStations, int potentialValue) {
+        int stations = 1;
+        int stationDuration = 0;
+        for(int current:stepDurations){
+            if(stations > numStations)
+                return false;
+            if(current+stationDuration > potentialValue){
+                stations++;
+                stationDuration = current;
+            }else 
+                stationDuration+=current;
+        }
+        return stations<=numStations;
+    }
+}
+```
