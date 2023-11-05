@@ -696,10 +696,55 @@ class Program {
     }
 }
 ```
-### 
+### Detect Arbitrage (Bellman Ford Algorithm)
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+
+    public boolean detectArbitrage(ArrayList<ArrayList<Double>> exchangeRates) {
+        ArrayList<ArrayList<Double>> logExchangeRates = getLogExchangeRates(exchangeRates);
+        return foundNegativeWeightCycle(logExchangeRates,0);
+    }
+
+    private boolean foundNegativeWeightCycle(ArrayList<ArrayList<Double>> graph, int start) {
+        double[] distanceFromStart = new double[graph.size()];
+        Arrays.fill(distanceFromStart,Double.MAX_VALUE);
+        distanceFromStart[start] = 0L;
+        for(int i=0;i<graph.size()-1;i++)
+            if(!relaxAndUpdateDistance(graph,distanceFromStart))
+                return false;
+        return relaxAndUpdateDistance(graph,distanceFromStart);
+    }
+
+    private boolean relaxAndUpdateDistance(ArrayList<ArrayList<Double>> graph, double[] distanceFromStart) {
+        boolean update = false;
+        for(int source = 0;source<graph.size();source++){
+            for(int destination=0;destination<graph.get(source).size();destination++){
+                double edgeWight = graph.get(source).get(destination);
+                double newDistanceToDestination = distanceFromStart[source] + edgeWight;
+                if(newDistanceToDestination < distanceFromStart[destination]){
+                    update = true;
+                    distanceFromStart[destination] = newDistanceToDestination;
+                }
+            }
+        }
+        return update;
+    }
+
+    private ArrayList<ArrayList<Double>> getLogExchangeRates(ArrayList<ArrayList<Double>> exchangeRates) {
+        ArrayList<ArrayList<Double>> newGraph = new ArrayList<>();
+        for(int i =0;i<exchangeRates.size();i++){
+            newGraph.add(new ArrayList<>());
+            for (Double rate:exchangeRates.get(i)){
+                newGraph.get(i).add(-Math.log10(rate));
+            }
+        }
+        return newGraph;
+    }
+}
 ```
 ### 
 
