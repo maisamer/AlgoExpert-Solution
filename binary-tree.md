@@ -780,3 +780,98 @@ class Program {
     }
 }
 ```
+
+### Compare Leaf Traversal
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    // This is an input class. Do not edit.
+    static class BinaryTree {
+        public int value;
+        public BinaryTree left = null;
+        public BinaryTree right = null;
+
+        public BinaryTree(int value) {
+            this.value = value;
+        }
+    }
+    // O(n+m) time | O(h1+h2) space
+    public boolean compareLeafTraversal(BinaryTree tree1, BinaryTree tree2) {
+        // Write your code here.
+        Stack<BinaryTree> s1 = new Stack<>();
+        s1.push(tree1);
+        Stack<BinaryTree> s2 = new Stack<>();
+        s2.push(tree2);
+        while(!s1.empty() && !s2.empty()){
+            BinaryTree leaf1 = getNextLeafNode(s1);
+            BinaryTree leaf2 = getNextLeafNode(s2);
+            if(leaf1.value != leaf2.value)
+                return false;
+        }
+        return s1.empty() && s2.empty();
+    }
+
+    private BinaryTree getNextLeafNode(Stack<BinaryTree> stack) {
+        while(true){
+            BinaryTree node = stack.pop();
+            if(node.left == null && node.right == null)
+                return node;
+            if(node.left != null)
+                stack.push(node.left);
+            if(node.right != null)
+                stack.push(node.right);
+        }
+    }
+}
+```
+
+#### - Another Optimal Solution
+```java
+import java.util.*;
+
+class Program {
+    // This is an input class. Do not edit.
+    static class BinaryTree {
+        public int value;
+        public BinaryTree left = null;
+        public BinaryTree right = null;
+
+        public BinaryTree(int value) {
+            this.value = value;
+        }
+    }
+    // O(n+m) time | O(max(h1+h2)) space
+    public boolean compareLeafTraversal(BinaryTree tree1, BinaryTree tree2) {
+        // Write your code here.
+        BinaryTree list1LeafNodesLinkedList = connectBTLeafNodes(tree1,null,null)[0];
+        BinaryTree list2LeafNodesLinkedList = connectBTLeafNodes(tree2,null,null)[0];
+
+        while(list1LeafNodesLinkedList != null && list2LeafNodesLinkedList != null){
+            if(list1LeafNodesLinkedList.value != list2LeafNodesLinkedList.value)
+                return false;
+            list1LeafNodesLinkedList = list1LeafNodesLinkedList.right;
+            list2LeafNodesLinkedList = list2LeafNodesLinkedList.right;
+        }
+        return list1LeafNodesLinkedList == null && list2LeafNodesLinkedList == null;
+    }
+
+    private BinaryTree[] connectBTLeafNodes(BinaryTree current,BinaryTree head,BinaryTree prev) {
+        if(current == null)
+            return new BinaryTree[]{head,prev};
+        if(current.right == null && current.left == null){
+            if(head == null){
+                head = current;
+            }else{
+                prev.right = current;
+            }
+            prev = current;
+        }
+        BinaryTree[] left = connectBTLeafNodes(current.left,head,prev);
+        return connectBTLeafNodes(current.right,left[0],left[1]);
+    }
+
+}
+```
