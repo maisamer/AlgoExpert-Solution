@@ -746,10 +746,46 @@ class Program {
     }
 }
 ```
-### 
+### Two-Edge Connected Graph
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public boolean twoEdgeConnectedGraph(int[][] edges) {
+        // Write your code here.
+        if(edges.length == 0)
+            return true;
+        int [] arrivalTimes = new int[edges.length];
+        Arrays.fill(arrivalTimes,-1);
+        if(getMinArrivalTimeFromAncestor(edges,arrivalTimes,0,-1,0) == -1)
+            return false;
+        return checkConnectedGraph(arrivalTimes);
+    }
+
+    private boolean checkConnectedGraph(int[] arrivalTimes) {
+        for(int val:arrivalTimes)
+            if(val == -1)
+                return false;
+        return true;
+    }
+
+    private int getMinArrivalTimeFromAncestor(int[][] edges, int[] arrivalTimes, int currentVertex, int parent, int currentTime) {
+        arrivalTimes[currentVertex] = currentTime;
+        int minArrivalTime = currentTime;
+        for(int destination : edges[currentVertex]){
+            if(arrivalTimes[destination] == -1)
+                minArrivalTime = Math.min(minArrivalTime,
+                getMinArrivalTimeFromAncestor(edges,arrivalTimes,destination,currentVertex,currentTime+1));
+            else if(destination != parent)
+                minArrivalTime = Math.min(minArrivalTime,arrivalTimes[destination]);
+        }
+        if(currentTime == minArrivalTime && parent != -1)
+            return -1;
+        return minArrivalTime;
+    }
+}
 ```
 ### 
 
