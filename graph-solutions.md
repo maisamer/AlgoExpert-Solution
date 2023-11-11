@@ -787,8 +787,100 @@ class Program {
     }
 }
 ```
-### 
+### Airport Connections
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static int airportConnections(
+            List<String> airports, List<List<String>> routes, String startingAirport
+    ) {
+        // Write your code here.
+        Map<String,AirportNode> airportGraph = createAirportGraph(airports,routes);
+        List<AirportNode> unreachableAirportNodes = getUnreachableAirportNodes(airportGraph,airports,startingAirport);
+        markUnreachableConnection(airportGraph,unreachableAirportNodes);
+        return getMinNewConnection(airportGraph,unreachableAirportNodes);
+    }
+
+    private static int getMinNewConnection(Map<String, AirportNode> airportGraph, List<AirportNode> unreachableAirportNodes) {
+        unreachableAirportNodes.sort((a1,a2)->a2.unreachableConnection.size()-a1.unreachableConnection.size());
+        int newConnection = 0;
+        for(AirportNode node:unreachableAirportNodes){
+            if(node.isReachable)
+                continue;
+            newConnection++;
+            for(String connection:node.unreachableConnection)
+                airportGraph.get(connection).isReachable = true;
+        }
+        return newConnection;
+    }
+
+    private static void markUnreachableConnection(Map<String, AirportNode> airportGraph, List<AirportNode> unreachableAirportNodes) {
+        for(AirportNode airportNode:unreachableAirportNodes){
+            List<String> unreachableConnection = new ArrayList<>();
+            dfsAddUnreachableConnections(airportNode.airport,airportGraph,unreachableConnection,new HashSet<>());
+            airportNode.unreachableConnection = unreachableConnection;
+        }
+    }
+
+    private static void dfsAddUnreachableConnections(String airport, Map<String, AirportNode> airportGraph,
+                                                     List<String> unreachableConnection, HashSet<String> visited) {
+        if(airportGraph.get(airport).isReachable)
+            return;
+        if(visited.contains(airport))
+            return;
+        visited.add(airport);
+        unreachableConnection.add(airport);
+        for(String connection : airportGraph.get(airport).connection)
+            dfsAddUnreachableConnections(connection,airportGraph,unreachableConnection,visited);
+    }
+
+    private static List<AirportNode> getUnreachableAirportNodes(Map<String, AirportNode> airportGraph, List<String> airports, String startingAirport) {
+        Set<String> visited = new HashSet<>();
+        List<AirportNode> unreachableAirportNodes = new ArrayList<>();
+        dfs(airportGraph,startingAirport,visited);
+        for(String airport:airports){
+            if(visited.contains(airport))
+                continue;
+            AirportNode airportNode = airportGraph.get(airport);
+            airportNode.isReachable = false;
+            unreachableAirportNodes.add(airportNode);
+        }
+        return unreachableAirportNodes;
+    }
+
+    private static void dfs(Map<String, AirportNode> airportGraph,String airport, Set<String> visited) {
+        if(visited.contains(airport))
+            return;
+        visited.add(airport);
+        for(String connection : airportGraph.get(airport).connection)
+            dfs(airportGraph,connection,visited);
+    }
+
+    private static Map<String, AirportNode> createAirportGraph(List<String> airports, List<List<String>> routes) {
+        Map<String,AirportNode> airportGraph = new HashMap<>();
+        for(String airport:airports)
+            airportGraph.put(airport,new AirportNode(airport));
+        for(List<String> route:routes)
+            airportGraph.get(route.get(0)).connection.add(route.get(1));
+
+        return airportGraph;
+    }
+
+    private static class AirportNode {
+        String airport;
+        List<String> connection;
+        List<String> unreachableConnection;
+        boolean isReachable;
+
+        public AirportNode(String airport) {
+            this.airport = airport;
+            this.connection = new ArrayList<>();
+            this.unreachableConnection = new ArrayList<>();
+            this.isReachable = true;
+        }
+    }
+}
 ```
