@@ -357,41 +357,231 @@ class Program {
 }
 ```
 
-### 
+### Find Loop
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+  public static LinkedList findLoop(LinkedList head) {
+    // Write your code here.
+    LinkedList slow=head,fast=head;
+    while(fast!= null && fast.next != null){
+      slow = slow.next;
+      fast = fast.next.next;
+      if(slow == fast)
+        break;
+    }
+    slow = head;
+    while(fast!= slow){
+      slow = slow.next;
+      fast = fast.next;
+    }
+    return slow;
+  }
+
+  static class LinkedList {
+    int value;
+    LinkedList next = null;
+
+    public LinkedList(int value) {
+      this.value = value;
+    }
+  }
+}
 ```
 
-### 
+### Reverse Linked List
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+  public static LinkedList reverseLinkedList(LinkedList head) {
+    // Write your code here.
+    LinkedList prev = null;
+    LinkedList curr = head;
+    while(curr != null){
+      LinkedList temp = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = temp;
+    }
+    return prev;
+  }
+
+  static class LinkedList {
+    int value;
+    LinkedList next = null;
+
+    public LinkedList(int value) {
+      this.value = value;
+    }
+  }
+}
 ```
 
-### 
+### Merge Linked Lists
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+  // This is an input class. Do not edit.
+  public static class LinkedList {
+    int value;
+    LinkedList next;
+
+    LinkedList(int value) {
+      this.value = value;
+      this.next = null;
+    }
+  }
+
+  public static LinkedList mergeLinkedLists(
+    LinkedList headOne, LinkedList headTwo
+  ) {
+    // Write your code here.
+    LinkedList dummy = new LinkedList(-1);
+    LinkedList curr = dummy;
+    while(headOne != null || headTwo != null){
+      if(headOne == null){
+        curr.next = headTwo;
+        headTwo = headTwo.next;
+      }else if(headTwo == null){
+        curr.next = headOne;
+        headOne = headOne.next;
+      }else{
+        if(headOne.value < headTwo.value){
+          curr.next = headOne;
+          headOne = headOne.next;
+        }else{
+          curr.next = headTwo;
+          headTwo = headTwo.next;
+        }
+      }
+      curr = curr.next;
+    }
+    return dummy.next;
+  }
+}
 ```
 
-### 
+### Another Solution
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+  // This is an input class. Do not edit.
+  public static class LinkedList {
+    int value;
+    LinkedList next;
+
+    LinkedList(int value) {
+      this.value = value;
+      this.next = null;
+    }
+  }
+
+  public static LinkedList mergeLinkedLists(
+    LinkedList headOne, LinkedList headTwo
+  ) {
+    // Write your code here.
+    LinkedList p1 = headOne , p2 = headTwo,prev=null;
+    while(p1 != null && p2 != null){
+      if(p1.value<p2.value){
+        prev = p1;
+        p1 = p1.next;
+      }else{
+        if(prev != null) prev.next = p2;
+        prev = p2;
+        p2 = p2.next;
+        prev.next = p1;
+      }
+    }
+    if(p1 == null)
+      prev.next = p2;
+    
+    return headOne.value < headTwo.value ? headOne:headTwo;
+  }
+}
 ```
 
-### 
+### Shift Linked List
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    public static LinkedList shiftLinkedList(LinkedList head, int k) {
+        int n = head.getLength();
+        System.out.println(n);
+        k%=n;
+        if(k == 0)
+            return head;
+        LinkedList left = head,right = head,prev = head,curr = head,tail = null;
+        if(k > 0){
+            int idx = n - k + 1;
+            while(idx > 1){
+                prev = curr;
+                left = curr.next;
+                curr = curr.next;
+                idx--;
+            }
+            while(curr != null){
+                right = curr;
+                curr = curr.next;
+            }
+            prev.next = null;
+            right.next = head;
+        }else{
+            int idx = k*-1 ;
+            while(idx > 0){
+                right = curr;
+                curr = curr.next;
+                idx--;
+            }
+            while(curr != null){
+                tail = curr;
+                curr = curr.next;
+            }
+            LinkedList re = right.next ;
+            right.next = null;
+            tail.next = left;
+            return re;
+        }
+        return left;
+
+    }
+
+    static class LinkedList {
+        public int value;
+        public LinkedList next;
+
+        public LinkedList(int value) {
+            this.value = value;
+            next = null;
+        }
+
+        int getLength(){
+            LinkedList curr = this;
+            int len = 0;
+            while(curr != null){
+                len++;
+                curr = curr.next;
+            }
+            return len;
+        }
+    }
+}
 ```
 
-### 
-
-#### - JAVA Solution
-```java
-```
 ### LRU Cashe
 
 #### - JAVA Solution
@@ -525,4 +715,88 @@ class Program {
 
     }
 }
+```
+### Rearrange Linked List
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public static LinkedList rearrangeLinkedList(LinkedList head, int k) {
+        // Write your code here.
+        LinkedList smallHead = null,smallTail = null;
+        LinkedList equalHead = null,equalTail = null;
+        LinkedList bigHead = null,bigTail = null;
+        LinkedList curr = head;
+        while(curr != null){
+            if(curr.value < k){
+                LinkedList[] changes = growChangeLinkedList(smallHead,smallTail,curr);
+                smallHead = changes[0];
+                smallTail = changes[1];
+            }
+            else if(curr.value > k){
+                LinkedList[] changes = growChangeLinkedList(bigHead,bigTail,curr);
+                bigHead = changes[0];
+                bigTail = changes[1];
+            }
+            else {
+                LinkedList[] changes = growChangeLinkedList(equalHead,equalTail,curr);
+                equalHead = changes[0];
+                equalTail = changes[1];
+            }
+            LinkedList prev = curr;
+            curr = curr.next;
+            prev.next = null;
+        }
+        LinkedList[] firstConnection = connectLinkedList(smallHead,smallTail,equalHead,equalTail);
+        LinkedList[] finalConnection = connectLinkedList(firstConnection[0],firstConnection[1],bigHead,bigTail);
+        return finalConnection[0];
+    }
+
+    private static LinkedList[] connectLinkedList(LinkedList headOne, LinkedList tailOne, LinkedList headTwo, LinkedList tailTwo) {
+        LinkedList newHead = headOne == null ? headTwo:headOne;
+        LinkedList newTail = tailTwo == null ? tailOne: tailTwo;
+        if(tailOne != null)
+            tailOne.next = headTwo;
+        return new LinkedList[]{newHead,newTail};
+    }
+
+    private static LinkedList[] growChangeLinkedList(LinkedList head, LinkedList tail, LinkedList curr) {
+        LinkedList[] changes = new LinkedList[]{head,curr};
+        if(head == null)
+            changes[0] = curr;
+        if(tail != null)
+            tail.next = curr;
+        return changes;
+    }
+
+    static class LinkedList {
+        public int value;
+        public LinkedList next;
+
+        public LinkedList(int value) {
+            this.value = value;
+            next = null;
+        }
+    }
+}
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
+```
+
+### 
+
+#### - JAVA Solution
+```java
 ```
