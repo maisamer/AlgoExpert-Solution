@@ -20,6 +20,31 @@ class Program {
   }
 }
 ```
+### Product Sum
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+  // Tip: You can use `element instanceof ArrayList` to check whether an item
+  // is an array or an integer.
+  public static Integer productSum(List<Object> array,Integer depth){
+    int ans = 0;
+    for(int i=0;i<array.size();i++){
+      if(array.get(i) instanceof ArrayList)
+        ans = ans + productSum((List)array.get(i),depth+1);
+      else
+        ans = ans + (Integer) array.get(i);
+    }
+    return ans*depth;
+  }
+  public static int productSum(List<Object> array) {
+    return productSum(array,1);
+  }
+}
+```
+
 ### Permutations
 
 #### - CPP Solution
@@ -117,6 +142,76 @@ int rec(int height, int maxSteps) {
 int staircaseTraversal(int height, int maxSteps) {
   if(height == 0) return 0;
   return rec(height,maxSteps);
+}
+```
+
+### Blackjack Probability
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+
+    public float blackjackProbability(int target, int startingHand) {
+        // Write your code here.
+        Map<Integer,Float> memo = new HashMap<>();
+        return Math.round(blackjackProbabilityHelper(target,startingHand,memo)*1000f)/1000f;
+    }
+    float blackjackProbabilityHelper(int target, int start, Map<Integer, Float> memo){
+        if(start > target)
+            return 1;
+        if(start+4 >= target)
+            return 0;
+        if(memo.containsKey(start))
+            return memo.get(start);
+        float ans = 0;
+        for(int i=1;i<=10;i++)
+            ans += .1*blackjackProbabilityHelper(target,start+i, memo);
+
+        memo.put(start,ans);
+        return ans;
+    }
+}
+
+```
+### Reveal Minesweeper
+
+#### - JAVA Solution
+```java
+import java.util.*;
+
+class Program {
+    public String[][] revealMinesweeper(String[][] board, int row, int column) {
+        int height = board.length, width = board[0].length;
+        if(board[row][column].equals("M")){
+            board[row][column] = "X";
+            return board;
+        }
+        List<int[]> neighbors = getNeighbors(height,width,row,column);
+        int minesCount = 0;
+        for(int []neighbor:neighbors)
+            if(board[neighbor[0]][neighbor[1]].equals("M"))
+                minesCount++;
+        board[row][column] = Integer.toString(minesCount);
+        if(minesCount == 0)
+            for(int []neighbor:neighbors)
+                if(board[neighbor[0]][neighbor[1]].equals("H"))
+                    revealMinesweeper(board,neighbor[0],neighbor[1]);
+        return board;
+    }
+
+    private List<int[]> getNeighbors(int height,int width, int row, int column) {
+        List<int[]> neighbors = new ArrayList<>();
+        int [][] directions = new int[][]{new int[]{1,1},new int[]{-1,-1},new int[]{0,1},new int[]{0,-1},
+                new int[]{-1,0},new int[]{1,0},new int[]{1,-1},new int[]{-1,1}};
+        for(int i=0;i<8;i++){
+            if(row+directions[i][0] >=0 && row+directions[i][0]<height
+                    && column+directions[i][1] >=0 && column+directions[i][1]<width)
+                neighbors.add(new int[]{row+directions[i][0],column+directions[i][1]});
+        }
+        return neighbors;
+    }
 }
 ```
 ### Lowest Common Manager
