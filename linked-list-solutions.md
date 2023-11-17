@@ -783,16 +783,121 @@ class Program {
 }
 ```
 
-### 
+### Linked List Palindrome
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    // This is an input class. Do not edit.
+
+    public boolean linkedListPalindrome(LinkedList head) {
+        // Write your code here.
+        LinkedList slow = head,fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        LinkedList secondHalf = reversedSecondHalf(slow);
+        LinkedList firstHalf = head;
+        while (firstHalf != null && secondHalf != null){
+            if(firstHalf.value != secondHalf.value)
+                return false;
+            firstHalf = firstHalf.next;
+            secondHalf = secondHalf.next;
+        }
+        return true;
+    }
+
+    private LinkedList reversedSecondHalf(LinkedList head) {
+        LinkedList curr = head;
+        LinkedList prev = null;
+        while(curr != null){
+            LinkedList next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    public static class LinkedList {
+        public int value;
+        public LinkedList next = null;
+
+        public LinkedList(int value) {
+            this.value = value;
+        }
+    }
+}
 ```
 
-### 
+### Zip Linked List
 
 #### - JAVA Solution
 ```java
+import java.util.*;
+
+class Program {
+    // This is an input class. Do not edit.
+    public LinkedList getMiddleNode(LinkedList head){
+        LinkedList slow = head,fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        LinkedList secondHalf = slow.next;
+        slow.next = null;
+        return secondHalf;
+    }
+    private LinkedList reversedSecondHalf(LinkedList head) {
+        LinkedList curr = head;
+        LinkedList prev = null;
+        while(curr != null){
+            LinkedList next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    public LinkedList zipLinkedList(LinkedList linkedList) {
+        // Write your code here.
+        if(linkedList.next == null || linkedList.next.next == null)
+            return linkedList;
+        LinkedList firstHalf = linkedList;
+        LinkedList secondHalf = getMiddleNode(linkedList);
+        LinkedList reversedSecondHalf = reversedSecondHalf(secondHalf);
+
+        return interweaveLinkedLists(firstHalf,reversedSecondHalf);
+    }
+
+    private LinkedList interweaveLinkedLists(LinkedList firstHalf, LinkedList secondHalf) {
+        LinkedList firstIt = firstHalf,secondIt = secondHalf;
+        while (firstIt != null && secondIt != null){
+            LinkedList firstHalfNext = firstIt.next;
+            LinkedList secondHalfNext = secondIt.next;
+            firstIt.next = secondIt;
+            secondIt.next = firstHalfNext;
+            firstIt = firstHalfNext;
+            secondIt = secondHalfNext;
+        }
+        return firstHalf;
+    }
+
+
+    public static class LinkedList {
+        public int value;
+        public LinkedList next;
+
+        public LinkedList(int value) {
+            this.value = value;
+            this.next = null;
+        }
+    }
+}
 ```
 
 ### 
